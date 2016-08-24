@@ -1,10 +1,6 @@
 #!/bin/bash
 
-# Exit immediately if a pipeline returns non-zero status
-# http://www.gnu.org/software/bash/manual/bashref.html#The-Set-Builtin
-set -e
-
-mocha
+mocha \
   --check-leaks \
   --bail \
   --grep ${npm_config_grep:-''} \
