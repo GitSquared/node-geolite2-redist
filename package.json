@@ -1,6 +1,6 @@
 {
   "name": "geolite2",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Maxmind's GeoLite2 Free Databases",
   "main": "index.js",
   "scripts": {
