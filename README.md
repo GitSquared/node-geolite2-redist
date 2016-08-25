@@ -1,4 +1,5 @@
-# node-geolite2
+node-geolite2 [![Build Status](https://travis-ci.org/runk/node-geolite2.png)](https://travis-ci.org/runk/node-geolite2)
+========
 
 Maxmind's GeoLite2 Free Databases
 
