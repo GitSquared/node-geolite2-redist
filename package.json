@@ -3,6 +3,15 @@
   "version": "1.1.0",
   "description": "Maxmind's GeoLite2 Free Databases",
   "main": "index.js",
+  "keywords": [
+    "maxmind",
+    "mmdb",
+    "geo",
+    "geoip",
+    "geoip2",
+    "geobase",
+    "geo lookup",
+  ],
   "scripts": {
     "test": "scripts/test",
     "release": "scripts/release",
