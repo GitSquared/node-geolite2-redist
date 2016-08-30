@@ -10,7 +10,7 @@
     "geoip",
     "geoip2",
     "geobase",
-    "geo lookup",
+    "geo lookup"
   ],
   "scripts": {
     "test": "scripts/test",
