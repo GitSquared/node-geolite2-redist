@@ -14,4 +14,10 @@ describe('geolite2', function() {
     assert(stat.size > 1e6);
     assert(stat.ctime);
   });
+
+  it('should return a valid ASN db path', function() {
+    var stat = fs.statSync(geolite2.paths.asn);
+    assert(stat.size > 1e6);
+    assert(stat.ctime);
+  });
 });
