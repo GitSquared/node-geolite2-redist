@@ -12,7 +12,7 @@ This product includes GeoLite2 data created by MaxMind, available from [http://w
 var geolite2 = require('geolite2');
 var maxmind = require('maxmind');
 
-var lookup = maxmind.open(geolite2.paths.city); // or geolite2.paths.country
+var lookup = maxmind.openSync(geolite2.paths.city); // or geolite2.paths.country
 var city = lookup.get('66.6.44.4');
 ```
 
