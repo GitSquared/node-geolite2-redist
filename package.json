@@ -29,6 +29,6 @@
   "homepage": "https://github.com/runk/node-geolite2#readme",
   "dependencies": {},
   "devDependencies": {
-    "mocha": "^3.0.2"
+    "mocha": "^5.2.0"
   }
 }
