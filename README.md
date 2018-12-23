@@ -18,4 +18,4 @@ var city = lookup.get('66.6.44.4');
 
 ## License
 
-MIT
+Creative Commons Attribution-ShareAlike 4.0 International License
