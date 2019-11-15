@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-cd dbs
+mkdir dbs && cd dbs
 rm -rf *
 curl https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz -o GeoLite2-City.mmdb.gz
 curl https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz -o GeoLite2-Country.mmdb.gz
