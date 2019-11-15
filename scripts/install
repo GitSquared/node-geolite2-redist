@@ -1,0 +1,16 @@
+#!/bin/bash -ex
+
+cd dbs
+rm -rf *
+mkdir tmp
+curl https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz -o GeoLite2-City.mmdb.gz
+curl https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz -o GeoLite2-Country.mmdb.gz
+curl https://geolite.maxmind.com/download/geoip/database/GeoLite2-ASN.tar.gz --create-dirs -o tmp/GeoLite2-ASN.tar.gz
+
+gunzip GeoLite2-City.mmdb.gz
+gunzip GeoLite2-Country.mmdb.gz
+
+asn=$(tar -tzf tmp/GeoLite2-ASN.tar.gz | grep 'mmdb')
+tar -C tmp -xzf tmp/GeoLite2-ASN.tar.gz $asn 
+mv tmp/$asn .
+rm -rf tmp

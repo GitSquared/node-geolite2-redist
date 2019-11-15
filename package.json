@@ -13,6 +13,7 @@
     "geo lookup"
   ],
   "scripts": {
+    "install": "scripts/install",
     "test": "scripts/test",
     "release": "scripts/release",
     "mirror": "scripts/mirror"
