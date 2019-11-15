@@ -13,9 +13,9 @@
     "geo lookup"
   ],
   "scripts": {
+    "postinstall": "scripts/postinstall",
     "test": "scripts/test",
-    "release": "scripts/release",
-    "mirror": "scripts/mirror"
+    "release": "scripts/release"
   },
   "repository": {
     "type": "git",
