@@ -13,7 +13,7 @@
     "geo lookup"
   ],
   "scripts": {
-    "postinstall": "scripts/postinstall",
+    "postinstall": "node scripts/postinstall.js",
     "test": "scripts/test",
     "release": "scripts/release"
   },
@@ -29,6 +29,7 @@
   "homepage": "https://github.com/runk/node-geolite2#readme",
   "dependencies": {},
   "devDependencies": {
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "tar": "^5.0.5"
   }
 }
