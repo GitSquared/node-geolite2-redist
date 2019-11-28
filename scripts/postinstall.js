@@ -22,7 +22,7 @@ links.forEach(url =>
   download(url).then(result =>
     result.pipe(tar.t()).on("entry", entry => {
       if (entry.path.endsWith(".mmdb")) {
-        const dstFilename = path.join("./dbs", path.basename(entry.path));
+        const dstFilename = path.join(__dirname, "../dbs", path.basename(entry.path));
         entry.pipe(fs.createWriteStream(dstFilename));
       }
     })
