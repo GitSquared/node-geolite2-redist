@@ -27,9 +27,10 @@
     "url": "https://github.com/runk/node-geolite2/issues"
   },
   "homepage": "https://github.com/runk/node-geolite2#readme",
-  "dependencies": {},
-  "devDependencies": {
-    "mocha": "^5.2.0",
+  "dependencies": {
     "tar": "^5.0.5"
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0"
   }
 }
