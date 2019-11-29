@@ -10,7 +10,7 @@ const links = [
   "https://geolite.maxmind.com/download/geoip/database/GeoLite2-ASN.tar.gz"
 ];
 
-const downloadPath = path.join(__dirname, "../dbs");
+const downloadPath = path.join(__dirname, "..", "dbs");
 
 if (!fs.existsSync(downloadPath)) fs.mkdirSync(downloadPath);
 
