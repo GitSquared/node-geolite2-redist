@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/runk/node-geolite2#readme",
   "dependencies": {
+    "md5-file": "^4.0.0",
     "tar": "^5.0.5"
   },
   "devDependencies": {

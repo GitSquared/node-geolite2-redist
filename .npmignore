@@ -1,3 +1,8 @@
+# Database redistribution sources
+redist/
+
+# Having both .npmignore and .gitignore will cause NPM to ignore the .git one, so we have to reiterate our ignoring rules
+# ----
 # Logs
 logs
 *.log
