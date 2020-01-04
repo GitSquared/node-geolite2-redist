@@ -7,7 +7,6 @@ const downloadPath = path.join(__dirname, '..', 'dbs');
 if (!fs.existsSync(downloadPath)) fs.mkdirSync(downloadPath);
 
 console.log("Downloading MaxMind databases from mirror...");
-console.log(downloadHelper.getEditions());
 downloadHelper.fetchChecksums().then(() => {
   return downloadHelper.fetchDatabases(downloadPath);
 }).then(() => {

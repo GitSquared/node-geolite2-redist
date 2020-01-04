@@ -3,6 +3,9 @@ redist/
 
 # Having both .npmignore and .gitignore will cause NPM to ignore the .git one, so we have to reiterate our ignoring rules
 # ----
+# Downloaded databases
+dbs/
+
 # Logs
 logs
 *.log

@@ -1,6 +1,9 @@
 # Uncompressed MaxMind databases
 redist/*.mmdb
 
+# Downloaded databases
+dbs/
+
 # Logs
 logs
 *.log

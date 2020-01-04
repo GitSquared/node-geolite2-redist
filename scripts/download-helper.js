@@ -30,7 +30,7 @@ function fetchChecksums() {
           checksum = checksum+chunk.toString();
         });
         res.on('end', () => {
-          if (!res.complete || checksum.length !== 96) throw new Error(`Could not fetch checksum for ${edition.name}\n\nReceived:\n${checksum}`);
+          if (!res.complete || checksum.length !== 97) throw new Error(`Could not fetch checksum for ${edition.name}\n\nReceived:\n${checksum}`);
           edition.checksum = checksum;
           resolve();
         });
@@ -43,11 +43,11 @@ function fetchChecksums() {
 
 function fetchDatabases(outPath) {
   const fetch = url => new Promise(resolve => {
-     https.get(edition.dbURL, res => {
+     https.get(url, res => {
         try {
-          resolve(res.pipe(zlib.createGunZip({})));
-        } catch(_) {
-          throw new Error(`Could not fetch ${edition.name}`);
+          resolve(res.pipe(zlib.createGunzip({})));
+        } catch(e) {
+          throw new Error(`Could not fetch ${url}\n\nError:\n${e}`);
         }
       });
   });
