@@ -30,7 +30,8 @@ function fetchChecksums() {
           checksum = checksum+chunk.toString();
         });
         res.on('end', () => {
-          if (!res.complete || checksum.length !== 97) throw new Error(`Could not fetch checksum for ${edition.name}\n\nReceived:\n${checksum}`);
+          checksum = checksum.trim();
+          if (!res.complete || checksum.length !== 96) throw new Error(`Could not fetch checksum for ${edition.name}\n\nReceived:\n${checksum}`);
           edition.checksum = checksum;
           resolve();
         });
@@ -75,7 +76,7 @@ function verifyAllChecksums(downloadPath) {
 
   editions.forEach(edition => {
     promises.push(new Promise((resolve, reject) => {
-      fs.readFile(path.join(downloadPath, edition.name+'.mmdb.sha384'), (err, buffer) => {
+      fs.readFile(path.join(downloadPath, edition.name+'.mmdb'), (err, buffer) => {
         if (err) reject(err);
         hash = sha384(buffer).toString('hex');
         if (hash === edition.checksum) {
