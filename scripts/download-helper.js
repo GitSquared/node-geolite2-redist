@@ -3,7 +3,7 @@ const https = require('https');
 const zlib = require('zlib');
 const path = require('path');
 const tar = require('tar');
-const md5sum = require('md5-file/promise');
+const sha384 = require('sha384');
 
 // TODO: Change URL from fork to @runk's repo (and master branch)
 const link = file => `https://raw.githubusercontent.com/GitSquared/node-geolite2/new-eula-redistribution/redist/${file}`;
@@ -16,7 +16,7 @@ const editions = [
 
 editions.forEach((edition, index) => {
   editions[index].dbURL = link(edition.name+'.tar.gz');
-  editions[index].checksumURL = link(edition.name+'.mmdb.md5');
+  editions[index].checksumURL = link(edition.name+'.mmdb.sha384');
 });
 
 function fetchChecksums() {
@@ -30,7 +30,7 @@ function fetchChecksums() {
           checksum = checksum+chunk.toString();
         });
         res.on('end', () => {
-          if (!res.complete || checksum.length !== 32) throw new Error(`Could not fetch checksum for ${edition.name}`);
+          if (!res.complete || checksum.length !== 96) throw new Error(`Could not fetch checksum for ${edition.name}\n\nReceived:\n${checksum}`);
           edition.checksum = checksum;
           resolve();
         });
@@ -75,14 +75,14 @@ function verifyAllChecksums(downloadPath) {
 
   editions.forEach(edition => {
     promises.push(new Promise((resolve, reject) => {
-      md5sum(path.join(downloadPath, edition.name+'.mmdb.md5')).then(hash => {
+      fs.readFile(path.join(downloadPath, edition.name+'.mmdb.sha384'), (err, buffer) => {
+        if (err) reject(err);
+        hash = sha384(buffer).toString('hex');
         if (hash === edition.checksum) {
           resolve();
         } else {
           reject(`Mismatched checksums for ${edition.name}`);
         }
-      }).catch(e => {
-        reject(e);
       });
     }));
   });
