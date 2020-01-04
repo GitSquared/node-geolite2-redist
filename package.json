@@ -22,7 +22,7 @@
     "url": "git+https://github.com/runk/node-geolite2.git"
   },
   "author": "Dmitry Shirokov <deadrunk@gmail.com>",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "bugs": {
     "url": "https://github.com/runk/node-geolite2/issues"
   },
