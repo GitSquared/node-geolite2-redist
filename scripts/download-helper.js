@@ -12,18 +12,15 @@ const editions = [
   { name: 'GeoLite2-ASN' },
   { name: 'GeoLite2-City' },
   { name: 'GeoLite2-Country' }
-];
-
-editions.forEach((edition, index) => {
-  editions[index].dbURL = link(edition.name+'.tar.gz');
-  editions[index].checksumURL = link(edition.name+'.mmdb.sha384');
+].map(edition => {
+  edition.dbURL = link(edition.name+'.tar.gz');
+  edition.checksumURL = link(edition.name+'.mmdb.sha384');
+  return edition;
 });
 
 function fetchChecksums() {
-  let downloads = [];
-
-  editions.forEach(edition => {
-    downloads.push(new Promise(resolve => {
+  let downloads = editions.map(edition => {
+    return new Promise(resolve => {
       https.get(edition.checksumURL, res => {
         let checksum = '';
         res.on('data', chunk => {
@@ -36,7 +33,7 @@ function fetchChecksums() {
           resolve();
         });
       });
-    }));
+    });
   });
 
   return Promise.all(downloads);
@@ -46,46 +43,47 @@ function fetchDatabases(outPath) {
   const fetch = url => new Promise(resolve => {
      https.get(url, res => {
         try {
-          resolve(res.pipe(zlib.createGunzip({})));
+          resolve(res.pipe(zlib.createGunzip({})).pipe(tar.t()));
         } catch(e) {
           throw new Error(`Could not fetch ${url}\n\nError:\n${e}`);
         }
       });
   });
 
-  let downloads = [];
-
-  editions.forEach(edition => {
-    downloads.push(new Promise(resolve => {
+  let downloads = editions.map(edition => {
+    return new Promise(resolve => {
       fetch(edition.dbURL).then(res => {
-        res.pipe(tar.t()).on('entry', entry => {
+        res.on('entry', entry => {
           if (entry.path.endsWith('.mmdb')) {
             const dstFilename = path.join(outPath, path.basename(entry.path));
             entry.pipe(fs.createWriteStream(dstFilename));
           }
         });
+        res.on('error', e => {
+          reject(e);
+        });
+        res.on('finish', () => {
+          resolve();
+        });
       });
-    }));
+    });
   });
 
   return Promise.all(downloads);
 }
 
 function verifyAllChecksums(downloadPath) {
-  let promises = [];
-
-  editions.forEach(edition => {
-    promises.push(new Promise((resolve, reject) => {
+  let promises = editions.map(edition => {
+    return new Promise((resolve, reject) => {
       fs.readFile(path.join(downloadPath, edition.name+'.mmdb'), (err, buffer) => {
         if (err) reject(err);
-        hash = sha384(buffer).toString('hex');
-        if (hash === edition.checksum) {
+        if (sha384(buffer).toString('hex') === edition.checksum) {
           resolve();
         } else {
-          reject(`Mismatched checksums for ${edition.name}`);
+          reject(new Error(`Mismatched checksums for ${edition.name}`));
         }
       });
-    }));
+    });
   });
 
   return Promise.all(promises);
