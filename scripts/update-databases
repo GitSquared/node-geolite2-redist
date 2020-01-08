@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# This script requires env var $MAXMIND_LICENSE_KEY to be set
+if [ -z ${MAXMIND_LICENSE_KEY} ];
+then
+  echo "Need \$MAXMIND_LICENSE_KEY";
+  exit 1
+fi
+
+editions=(GeoLite2-ASN GeoLite2-Country GeoLite2-City)
+
+cd redist
+
+for edition in ${editions[*]}
+do
+  echo -e "\nDownloading checksum for latest version of ${edition}..."
+  curl -s "https://download.maxmind.com/app/geoip_download?edition_id=${edition}&license_key=${MAXMIND_LICENSE_KEY}&suffix=tar.gz.md5" -o ${edition}.tar.gz.md5
+
+  if [ -f "$edition.tar.gz" ];
+  then
+	 echo "Checking against current version..."
+	 check=`cat ${edition}.tar.gz.md5`
+	 calculated=`md5sum ${edition}.tar.gz | awk '{print $1;}'`
+	 if [ "$check" == "$calculated" ];
+	 then
+		echo -e "\033[32;1m${edition} is already up to date\033[0m"
+		rm ${edition}.tar.gz.md5
+		exit 0
+	 else
+		echo "Update available!"
+	 fi
+  fi
+
+  echo "Downloading ${edition}..."
+  curl -s "https://download.maxmind.com/app/geoip_download?edition_id=${edition}&license_key=${MAXMIND_LICENSE_KEY}&suffix=tar.gz" -o ${edition}.tar.gz
+
+  echo "Verifying checksum..."
+  check=`cat ${edition}.tar.gz.md5`
+  calculated=`md5sum ${edition}.tar.gz | awk '{print $1;}'`
+  if [ "$check" != "$calculated" ];
+  then
+	 echo -e "\033[31;1mChecksums didn't match: failed download for ${edition}\033[0m"
+	 exit 1
+  else
+	 rm ${edition}.tar.gz.md5
+  fi
+
+  echo "Extracting database..."
+  tar -zxf ${edition}.tar.gz --wildcards '*.mmdb' --strip-components 1
+
+  echo "Calculating database checksum for redistribution..."
+  calculated=`sha384sum ${edition}.mmdb | awk '{print $1;}'`
+  echo "${calculated}" > ${edition}.mmdb.sha384
+
+  echo -e "\033[32;1mDatabase ${edition} successfully updated\033[0m"
+done
+
+echo -e "\n\033[1mAll databases processed\033[0m"
+exit 0
