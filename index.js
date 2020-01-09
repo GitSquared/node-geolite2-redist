@@ -13,32 +13,92 @@ const paths = {
     'GeoLite2-Country': path.join(downloadPath, 'GeoLite2-Country.mmdb')
 };
 
-function wrapReader(reader, readerBuilder) {
-  reader.lastUpdateCheck = 0;
-  reader.downloading = false;
+class UpdateSubscriber extends EventEmitter {
+  constructor() {
+    super();
 
-  return new Proxy(reader, {
-    get: (reader, prop) => {
-      if (Date.now() - reader.lastUpdateCheck > updateTimer || prop === 'triggerUpdate') {
-        reader.lastUpdateCheck = Date.now();
-        downloadHelper.fetchChecksums().then(() => {
-          return downloadHelper.verifyAllChecksums(downloadPath);
-        }).then(() => {
-          // All checksums match
-        }).catch(() => {
-          reader.downloading = true;
-          downloadHelper.fetchDatabases(downloadPath).then(() => {
-            return downloadHelper.verifyAllChecksums(downloadPath);
-          }).then(async () => {
-            reader = await readerBuilder(paths[reader.metadata.databaseType]);
-          }).catch(e => {
-            console.warn('geolite2 self-update error: ', e);
-          }).finally(() => {
-            reader.downloading = false;
-          });
+    this.downloading = false;
+
+    setInterval(() => {
+      this.checkUpdates();
+    }, updateTimer);
+    this.checkUpdates();
+
+    return this;
+  }
+
+  checkUpdates() {
+    this.emit('checking');
+    downloadHelper.fetchChecksums().then(() => {
+      return downloadHelper.verifyAllChecksums(downloadPath);
+    }).then(() => {
+      // All checksums match, no update
+    }).catch(() => {
+      this.update();
+    });
+  }
+
+  update() {
+    if (this.downloading) return false;
+    this.downloading = true;
+    this.emit('downloading');
+
+    downloadHelper.fetchDatabases(downloadPath).then(() => {
+      return downloadHelper.verifyAllChecksums(downloadPath);
+    }).then(() => {
+      this.emit('update', downloadHelper.getEditions());
+    }).catch(e => {
+      console.warn('geolite2 self-update error: ', e);
+    }).finally(() => {
+      this.downloading = false;
+    });
+  }
+
+  // Testing function
+  triggerUpdate() {
+    downloadHelper.fetchChecksums().then(() => {
+      return downloadHelper.verifyAllChecksums(downloadPath);
+    }).then(() => {
+      this.update();
+    }).catch(e => {
+      console.warn('geolite2 self-update error: ', e);
+    });
+  }
+}
+
+function wrapReader(reader, readerBuilder, db) {
+  let proxyObject = {
+    reader,
+    database: db,
+    lastUpdateCheck: 0,
+    subscriber: null
+  };
+
+  return new Proxy(proxyObject, {
+    get: (proxyObject, prop) => {
+      if (!proxyObject.subscriber) {
+        proxyObject.subscriber = new UpdateSubscriber();
+
+        proxyObject.subscriber.on('update', async () => {
+          proxyObject.reader = await readerBuilder(paths[proxyObject.database]);
+        });
+
+        proxyObject.subscriber.on('checking', () => {
+          proxyObject.lastUpdateCheck = Date.now();
         });
       }
-      return reader[prop];
+      if (Date.now() - proxyObject.lastUpdateCheck > updateTimer || prop === '_geolite2_triggerUpdateCheck') {
+        proxyObject.subscriber.checkUpdates();
+      }
+      if (prop === "_geolite2_triggerUpdate") {
+        proxyObject.subscriber.triggerUpdate();
+        return 'OK';
+      }
+
+      return proxyObject.reader[prop];
+    },
+    set: (proxyObject, prop, value) => {
+      proxyObject.reader[prop] = value;
     }
   });
 }
@@ -52,16 +112,18 @@ function open(database, readerBuilder) {
   if (typeof reader.then === 'function') {
     return new Promise((resolve, reject) => {
       reader.then(r => {
-        resolve(wrapReader(r, readerBuilder));
+        resolve(wrapReader(r, readerBuilder, database));
       }).catch(e => {
         throw e;
       });
     });
   } else {
-    return wrapReader(reader, readerBuilder);
+    return wrapReader(reader, readerBuilder, database);
   }
 }
 
 module.exports = {
-  open
+  open,
+  UpdateSubscriber,
+  paths
 };
