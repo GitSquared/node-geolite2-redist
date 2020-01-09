@@ -1,11 +1,11 @@
 node-geolite2 [![Build Status](https://travis-ci.org/runk/node-geolite2.png)](https://travis-ci.org/runk/node-geolite2)
 ========
 
-MaxMind's GeoLite2 Free Databases redistribution as an NPM library.
+A redistribution of MaxMind's GeoLite2 free databases as an npm library.
 
-You will need a database reader library capable of reading `.mmdb` files, like [node-maxmind](https://www.npmjs.com/package/maxmind), to use the databases.
+You will need a database reader capable of reading `.mmdb` files, like [node-maxmind](https://www.npmjs.com/package/maxmind), if you wish to use the data.
 
-This package contains the 3 GeoLite2 databases offered by MaxMind, namely:
+This package contains the 3 GeoLite2 databases, namely:
  - `GeoLite2-ASN`
  - `GeoLite2-Country`
  - `GeoLite2-City`
@@ -17,9 +17,9 @@ See [Warning](#warning) section for more info.
 
 ## Usage
 
-### Consuming the databases
+### Using the geoip data
 
-Example usage, using the `GeoLite2-City` database with `node-maxmind` as a database reader:
+Example geoip lookup, using the `GeoLite2-City` database with `node-maxmind` as a db reader:
 
 #### Async
 ```javascript
@@ -72,7 +72,7 @@ function useGeolite() {
 
 const dbWatcher = new geolite2.UpdateSubscriber();
 dbWatcher.on('update', () => {
-  userGeolite();
+  useGeolite();
 });
 
 // Empty event loop when shutting down
@@ -122,8 +122,8 @@ Internal class used to automatically update databases, exposed to allow advanced
 Please carefully read the LICENSE and EULA files. This package comes with certain restrictions and obligations, most notably:
  - You cannot prevent the library from updating the databases.
  - You cannot use the GeoLite2 data:
-  - for FCRA purposes,
-  - to identify specific households or individuals.
+   - for FCRA purposes,
+   - to identify specific households or individuals.
 
 This library's licensing is not suitable for commercial projects.
 
