@@ -25,7 +25,7 @@ do
 	 then
 		echo -e "\033[32;1m${edition} is already up to date\033[0m"
 		rm ${edition}.tar.gz.md5
-		exit 0
+		exit 65
 	 else
 		echo "Update available!"
 	 fi
