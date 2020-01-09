@@ -27,7 +27,10 @@ class UpdateSubscriber extends EventEmitter {
     return this;
   }
 
-  checkUpdates() {
+  async checkUpdates() {
+    // leave time for listeners to be up
+    await this._wait(200);
+
     this.emit('checking');
     downloadHelper.fetchChecksums().then(() => {
       return downloadHelper.verifyAllChecksums(downloadPath);
@@ -54,7 +57,9 @@ class UpdateSubscriber extends EventEmitter {
     });
   }
 
-  triggerUpdate() {
+  async triggerUpdate() {
+    await this._wait(100);
+
     downloadHelper.fetchChecksums().then(() => {
       return downloadHelper.verifyAllChecksums(downloadPath);
     }).then(() => {
@@ -66,6 +71,12 @@ class UpdateSubscriber extends EventEmitter {
 
   close() {
     clearInterval(this._checker);
+  }
+
+  _wait(x) {
+    return new Promise(resolve => {
+      setTimeout(resolve, x);
+    });
   }
 }
 
@@ -90,17 +101,24 @@ function wrapReader(reader, readerBuilder, db) {
           proxyObject.lastUpdateCheck = Date.now();
         });
       }
+
       if (Date.now() - proxyObject.lastUpdateCheck > updateTimer || prop === '_geolite2_triggerUpdateCheck') {
         proxyObject.subscriber.checkUpdates();
+        if (prop === '_geolite2_triggerUpdateCheck') return 'OK';
       }
+
       if (prop === '_geolite2_triggerUpdate') {
         proxyObject.subscriber.triggerUpdate();
         return 'OK';
       }
 
+      if (prop === '_geolite2_subscriber') {
+        return proxyObject.subscriber;
+      }
+
       if (prop === 'close') {
         proxyObject.subscriber.close();
-        delete proxyObject.reader;
+        proxyObject.reader = {};
         return () => {
           return true;
         };
