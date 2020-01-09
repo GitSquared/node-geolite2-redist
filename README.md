@@ -33,6 +33,9 @@ const maxmind = require('maxmind');
   });
 
   let city = lookup.get('66.6.44.4');
+
+  // Call this when done to empty node's event loop
+  lookup.close();
 })();
 ```
 
@@ -50,6 +53,8 @@ let lookup = geolite2.open('GeoLite2-City', path => {
 });
 
 let city = lookup.get('66.6.44.4');
+
+lookup.close();
 ```
 
 ### Advanced usage
@@ -62,13 +67,16 @@ const geolite2 = require('geolite2');
 
 function useGeolite() {
   // You can retrieve the path to `.mmdb` files
-  let cityPath = geolite2.paths.GeoLite2-City;
+  let cityPath = geolite2.paths['GeoLite2-City'];
 }
 
 const dbWatcher = new geolite2.UpdateSubscriber();
 dbWatcher.on('update', () => {
   userGeolite();
 });
+
+// Empty event loop when shutting down
+dbWatcher.close();
 ```
 
 ## API
@@ -105,6 +113,7 @@ Internal class used to automatically update databases, exposed to allow advanced
  - **Methods**
    - *checkUpdates()* Checks for new database updates and downloads them.
    - *triggerUpdate()* Replaces the current databases with fresh copies from the mirror.
+   - *close()* Shuts down the updater.
  - **Props**
    - `downloading`: `<boolean>` Whether databases are being downloaded in the background right now - see `downloading` event.
 

@@ -19,7 +19,7 @@ class UpdateSubscriber extends EventEmitter {
 
     this.downloading = false;
 
-    setInterval(() => {
+    this._checker = setInterval(() => {
       this.checkUpdates();
     }, updateTimer);
     this.checkUpdates();
@@ -54,7 +54,6 @@ class UpdateSubscriber extends EventEmitter {
     });
   }
 
-  // Testing function
   triggerUpdate() {
     downloadHelper.fetchChecksums().then(() => {
       return downloadHelper.verifyAllChecksums(downloadPath);
@@ -63,6 +62,10 @@ class UpdateSubscriber extends EventEmitter {
     }).catch(e => {
       console.warn('geolite2 self-update error: ', e);
     });
+  }
+
+  close() {
+    clearInterval(this._checker);
   }
 }
 
@@ -90,9 +93,17 @@ function wrapReader(reader, readerBuilder, db) {
       if (Date.now() - proxyObject.lastUpdateCheck > updateTimer || prop === '_geolite2_triggerUpdateCheck') {
         proxyObject.subscriber.checkUpdates();
       }
-      if (prop === "_geolite2_triggerUpdate") {
+      if (prop === '_geolite2_triggerUpdate') {
         proxyObject.subscriber.triggerUpdate();
         return 'OK';
+      }
+
+      if (prop === 'close') {
+        proxyObject.subscriber.close();
+        delete proxyObject.reader;
+        return () => {
+          return true;
+        };
       }
 
       return proxyObject.reader[prop];
