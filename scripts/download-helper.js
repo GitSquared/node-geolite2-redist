@@ -19,6 +19,8 @@ const editions = [
 });
 
 function fetchChecksums() {
+  let newChecksums = [];
+
   let downloads = editions.map(edition => {
     return new Promise(resolve => {
       https.get(edition.checksumURL, res => {
@@ -29,14 +31,31 @@ function fetchChecksums() {
         res.on('end', () => {
           checksum = checksum.trim();
           if (!res.complete || checksum.length !== 96) throw new Error(`Could not fetch checksum for ${edition.name}\n\nReceived:\n${checksum}`);
-          edition.checksum = checksum;
+
+          newChecksums.push({
+            name: edition.name,
+            checksum
+          });
           resolve();
         });
       });
     });
   });
 
-  return Promise.all(downloads);
+  return new Promise((resolve, reject) => {
+    Promise.all(downloads).then(() => {
+      if (newChecksums.length === editions.length) {
+        newChecksums.forEach(sum => {
+          editions[editions.findIndex(e => e.name === sum.name)].checksum = sum.checksum;
+        });
+        resolve();
+      } else {
+        reject();
+      }
+    }).catch(e => {
+      reject(e);
+    });
+  });
 }
 
 function fetchDatabases(outPath) {
