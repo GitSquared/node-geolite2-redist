@@ -28,11 +28,11 @@
   },
   "homepage": "https://github.com/runk/node-geolite2#readme",
   "dependencies": {
-    "maxmind": "^4.1.0",
     "sha384": "^1.0.0",
     "tar": "^5.0.5"
   },
   "devDependencies": {
+    "maxmind": "^4.1.0",
     "mocha": "^5.2.0"
   }
 }

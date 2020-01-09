@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const maxmind = require('maxmind');
+const { EventEmitter } = require('events');
 
 const downloadHelper = require('./scripts/download-helper.js');
 const downloadPath = path.resolve(__dirname, 'dbs');
@@ -13,7 +13,7 @@ const paths = {
     'GeoLite2-Country': path.join(downloadPath, 'GeoLite2-Country.mmdb')
 };
 
-function wrapReader(reader) {
+function wrapReader(reader, readerBuilder) {
   reader.lastUpdateCheck = 0;
   reader.downloading = false;
 
@@ -30,7 +30,7 @@ function wrapReader(reader) {
           downloadHelper.fetchDatabases(downloadPath).then(() => {
             return downloadHelper.verifyAllChecksums(downloadPath);
           }).then(async () => {
-            reader = await maxmind.open(paths[reader.metadata.databaseType]);
+            reader = await readerBuilder(paths[reader.metadata.databaseType]);
           }).catch(e => {
             console.warn('geolite2 self-update error: ', e);
           }).finally(() => {
@@ -43,19 +43,25 @@ function wrapReader(reader) {
   });
 }
 
-async function open(database) {
+function open(database, readerBuilder) {
   if (!downloadHelper.getEditions().find(e => e.name === database)) throw new Error(`No database named ${database}`);
-  return wrapReader(maxmind.open(paths[database]));
-}
+  if (typeof readerBuilder !== 'function') throw new Error('No database reader provided');
 
-function openSync(database) {
-  if (!downloadHelper.getEditions().find(e => e.name === database)) throw new Error(`No database named ${database}`);
+  let reader = readerBuilder(paths[database]);
 
-  let buffer = fs.readFileSync(paths[database]);
-  return wrapReader(new maxmind.Reader(buffer));
+  if (typeof reader.then === 'function') {
+    return new Promise((resolve, reject) => {
+      reader.then(r => {
+        resolve(wrapReader(r, readerBuilder));
+      }).catch(e => {
+        throw e;
+      });
+    });
+  } else {
+    return wrapReader(reader, readerBuilder);
+  }
 }
 
 module.exports = {
-  open,
-  openSync
+  open
 };
