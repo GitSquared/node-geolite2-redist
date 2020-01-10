@@ -9,6 +9,7 @@ This package contains the 3 GeoLite2 databases, namely:
  - `GeoLite2-ASN`
  - `GeoLite2-Country`
  - `GeoLite2-City`
+
 For more info check out the [MaxMind website](https://maxmind.com).
 
 Due to license requirements, this package automatically updates the databases in the background when it detects that a new version is available.

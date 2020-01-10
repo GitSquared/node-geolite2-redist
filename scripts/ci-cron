@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script requires env var $MAXMIND_LICENSE_KEY to be set
+# This script requires env var $GITHUB_PUSH_TOKEN to be set
 if [ -z ${GITHUB_PUSH_TOKEN} ];
 then
   echo "Need \$GITHUB_PUSH_TOKEN";
