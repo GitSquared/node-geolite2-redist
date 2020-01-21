@@ -7,7 +7,5 @@ then
   exit 1
 fi
 
-git filter-branch --force --index-filter \
-	"git rm --cached --ignore-unmatch redist/GeoLite2-*.tar.gz" \
-	--prune-empty --tag-name-fiter cat -- --all
+git filter-branch --force --index-filter "git rm --cached --ignore-unmatch redist/GeoLite2-*.tar.gz" --prune-empty --tag-name-fiter cat -- --all
 
