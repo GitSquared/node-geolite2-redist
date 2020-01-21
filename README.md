@@ -1,4 +1,4 @@
-node-geolite2 [![Build Status](https://travis-ci.org/runk/node-geolite2.png)](https://travis-ci.org/runk/node-geolite2)
+node-geolite2-redist [![Build Status](https://travis-ci.org/GitSquared/node-geolite2-redist.png)](https://travis-ci.org/GitSquared/node-geolite2-redist)
 ========
 
 A redistribution of MaxMind's GeoLite2 free databases as an npm library.
@@ -24,7 +24,7 @@ Example geoip lookup, using the `GeoLite2-City` database with `node-maxmind` as 
 
 #### Async
 ```javascript
-const geolite2 = require('geolite2');
+const geolite2 = require('geolite2-redist');
 
 const maxmind = require('maxmind');
 
@@ -43,7 +43,7 @@ const maxmind = require('maxmind');
 #### Sync
 
 ```javascript
-const geolite2 = require('geolite2');
+const geolite2 = require('geolite2-redist');
 
 const maxmind = require('maxmind');
 const fs = require('fs');
@@ -64,7 +64,7 @@ If you do not consume the databases directly, or need more flexible methods, the
 
 Example usage:
 ```javascript
-const geolite2 = require('geolite2');
+const geolite2 = require('geolite2-redist');
 
 function useGeolite() {
   // You can retrieve the path to `.mmdb` files
@@ -132,6 +132,6 @@ If you plan on using `node-geolite2` behind a firewall, you need to whitelist th
 
 ## License
 
-See [LICENSE](https://github.com/runk/node-geolite2/blob/master/LICENSE).
+See [LICENSE](https://github.com/GitSquared/node-geolite2-redist/blob/master/LICENSE).
 
 This product includes GeoLite2 data created by MaxMind, available from [https://www.maxmind.com](https://www.maxmind.com).
