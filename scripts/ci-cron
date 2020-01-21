@@ -3,8 +3,17 @@
 # This script requires env var $GITHUB_PUSH_TOKEN to be set
 if [ -z ${GITHUB_PUSH_TOKEN} ];
 then
-  echo "Need \$GITHUB_PUSH_TOKEN";
-  exit 1
+	echo "Need \$GITHUB_PUSH_TOKEN";
+	exit 1
+fi
+
+echo "Cleaning previous databases from git objects..."
+
+./scripts/clean-git-objects
+
+if [ $? -ne 0 ]
+then
+	exit 1
 fi
 
 ./scripts/update-databases
@@ -12,16 +21,16 @@ fi
 # Process previous script exit code
 if [ $? -eq 65 ];
 then
-  echo "Nothing to push"
-  exit 0
+	echo "Nothing to push"
+	exit 0
 elif [ $? -ne 0 ]
 then
-  exit 1
+	exit 1
 fi
 
 git add redist
 git commit -m "Update redistribution (cron job ${TRAVIS_JOB_NUMBER})" -m "${TRAVIS_JOB_WEB_URL}" --author="Travis CI <builds@travis-ci.org>"
-git push https://${GITHUB_PUSH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git master
+git push --force https://${GITHUB_PUSH_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git master
 
 echo "Updates pushed to GitHub remote"
 exit 0

@@ -9,110 +9,115 @@ const sha384 = require('sha384');
 const link = file => `https://raw.githubusercontent.com/GitSquared/node-geolite2/new-eula-redistribution/redist/${file}`;
 
 const editions = [
-  { name: 'GeoLite2-ASN' },
-  { name: 'GeoLite2-City' },
-  { name: 'GeoLite2-Country' }
+	{name: 'GeoLite2-ASN'},
+	{name: 'GeoLite2-City'},
+	{name: 'GeoLite2-Country'}
 ].map(edition => {
-  edition.dbURL = link(edition.name+'.tar.gz');
-  edition.checksumURL = link(edition.name+'.mmdb.sha384');
-  return edition;
+	edition.dbURL = link(edition.name + '.tar.gz');
+	edition.checksumURL = link(edition.name + '.mmdb.sha384');
+	return edition;
 });
 
 function fetchChecksums() {
-  let newChecksums = [];
+	const newChecksums = [];
 
-  let downloads = editions.map(edition => {
-    return new Promise(resolve => {
-      https.get(edition.checksumURL, res => {
-        let checksum = '';
-        res.on('data', chunk => {
-          checksum = checksum+chunk.toString();
-        });
-        res.on('end', () => {
-          checksum = checksum.trim();
-          if (!res.complete || checksum.length !== 96) throw new Error(`Could not fetch checksum for ${edition.name}\n\nReceived:\n${checksum}`);
+	const downloads = editions.map(edition => {
+		return new Promise(resolve => {
+			https.get(edition.checksumURL, res => {
+				let checksum = '';
+				res.on('data', chunk => {
+					checksum += chunk.toString();
+				});
+				res.on('end', () => {
+					checksum = checksum.trim();
+					if (!res.complete || checksum.length !== 96) {
+						throw new Error(`Could not fetch checksum for ${edition.name}\n\nReceived:\n${checksum}`);
+					}
 
-          newChecksums.push({
-            name: edition.name,
-            checksum
-          });
-          resolve();
-        });
-      });
-    });
-  });
+					newChecksums.push({
+						name: edition.name,
+						checksum
+					});
+					resolve();
+				});
+			});
+		});
+	});
 
-  return new Promise((resolve, reject) => {
-    Promise.all(downloads).then(() => {
-      if (newChecksums.length === editions.length) {
-        newChecksums.forEach(sum => {
-          editions[editions.findIndex(e => e.name === sum.name)].checksum = sum.checksum;
-        });
-        resolve();
-      } else {
-        reject();
-      }
-    }).catch(e => {
-      reject(e);
-    });
-  });
+	return new Promise((resolve, reject) => {
+		Promise.all(downloads).then(() => {
+			if (newChecksums.length === editions.length) {
+				newChecksums.forEach(sum => {
+					editions[editions.findIndex(e => e.name === sum.name)].checksum = sum.checksum;
+				});
+				resolve();
+			} else {
+				reject();
+			}
+		}).catch(error => {
+			reject(error);
+		});
+	});
 }
 
 function fetchDatabases(outPath) {
-  const fetch = url => new Promise(resolve => {
-     https.get(url, res => {
-        try {
-          resolve(res.pipe(zlib.createGunzip({})).pipe(tar.t()));
-        } catch(e) {
-          throw new Error(`Could not fetch ${url}\n\nError:\n${e}`);
-        }
-      });
-  });
+	const fetch = url => new Promise(resolve => {
+		https.get(url, res => {
+			try {
+				resolve(res.pipe(zlib.createGunzip({})).pipe(tar.t()));
+			} catch (error) {
+				throw new Error(`Could not fetch ${url}\n\nError:\n${error}`);
+			}
+		});
+	});
 
-  let downloads = editions.map(edition => {
-    return new Promise(resolve => {
-      fetch(edition.dbURL).then(res => {
-        res.on('entry', entry => {
-          if (entry.path.endsWith('.mmdb')) {
-            const dstFilename = path.join(outPath, path.basename(entry.path));
-            entry.pipe(fs.createWriteStream(dstFilename));
-          }
-        });
-        res.on('error', e => {
-          reject(e);
-        });
-        res.on('finish', () => {
-          resolve();
-        });
-      });
-    });
-  });
+	const downloads = editions.map(edition => {
+		return new Promise((resolve, reject) => {
+			fetch(edition.dbURL).then(res => {
+				res.on('entry', entry => {
+					if (entry.path.endsWith('.mmdb')) {
+						const dstFilename = path.join(outPath, path.basename(entry.path));
+						entry.pipe(fs.createWriteStream(dstFilename));
+					}
+				});
+				res.on('error', e => {
+					reject(e);
+				});
+				res.on('finish', () => {
+					resolve();
+				});
+			});
+		});
+	});
 
-  return Promise.all(downloads);
+	return Promise.all(downloads);
 }
 
 function verifyAllChecksums(downloadPath) {
-  let promises = editions.map(edition => {
-    return new Promise((resolve, reject) => {
-      fs.readFile(path.join(downloadPath, edition.name+'.mmdb'), (err, buffer) => {
-        if (err) reject(err);
-        if (sha384(buffer).toString('hex') === edition.checksum) {
-          resolve();
-        } else {
-          reject(new Error(`Mismatched checksums for ${edition.name}`));
-        }
-      });
-    });
-  });
+	const promises = editions.map(edition => {
+		return new Promise((resolve, reject) => {
+			fs.readFile(path.join(downloadPath, edition.name + '.mmdb'), (err, buffer) => {
+				if (err) {
+					reject(err);
+				}
 
-  return Promise.all(promises);
+				if (sha384(buffer).toString('hex') === edition.checksum) {
+					resolve();
+				} else {
+					reject(new Error(`Mismatched checksums for ${edition.name}`));
+				}
+			});
+		});
+	});
+
+	return Promise.all(promises);
 }
 
 module.exports = {
-  fetchChecksums,
-  fetchDatabases,
-  verifyAllChecksums,
-  getEditions: () => {
-    return editions;
-  }
+	fetchChecksums,
+	fetchDatabases,
+	verifyAllChecksums,
+	getEditions: () => {
+		return editions;
+	}
 };

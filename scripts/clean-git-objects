@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# This script requires env var $GITHUB_PUSH_TOKEN to be set
+if [ -z ${GITHUB_PUSH_TOKEN} ];
+then
+  echo "Need \$GITHUB_PUSH_TOKEN";
+  exit 1
+fi
+
+git filter-branch --force --index-filter \
+	"git rm --cached --ignore-unmatch redist/GeoLite2-*.tar.gz" \
+	--prune-empty --tag-name-fiter cat -- --all
+
