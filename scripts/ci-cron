@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script requires env var $GITHUB_PUSH_TOKEN to be set
+This script requires env var $GITHUB_PUSH_TOKEN to be set
 if [ -z ${GITHUB_PUSH_TOKEN} ];
 then
 	echo "Need \$GITHUB_PUSH_TOKEN";
@@ -10,21 +10,25 @@ fi
 echo "Cleaning previous databases from git objects..."
 
 ./scripts/clean-git-objects
-
-if [ $? -ne 0 ]
+stat=$?
+if [ $stat -ne 0 ]
 then
+	echo "Exited with ${stat}"
 	exit 1
 fi
 
 ./scripts/update-databases
 
+stat=$?
+
 # Process previous script exit code
-if [ $? -eq 65 ];
+if [ $stat -eq 65 ];
 then
 	echo "Nothing to push"
 	exit 0
-elif [ $? -ne 0 ]
+elif [ $stat -ne 0 ]
 then
+	echo "Exited with ${stat}"
 	exit 1
 fi
 
