@@ -5,8 +5,7 @@ const path = require('path');
 const tar = require('tar');
 const sha384 = require('sha384');
 
-// TODO: Change URL from fork to @runk's repo (and master branch)
-const link = file => `https://raw.githubusercontent.com/GitSquared/node-geolite2/new-eula-redistribution/redist/${file}`;
+const link = file => `https://raw.githubusercontent.com/GitSquared/node-geolite2-redist/master/redist/${file}`;
 
 const editions = [
 	{name: 'GeoLite2-ASN'},
