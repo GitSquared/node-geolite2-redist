@@ -1,6 +1,6 @@
 {
   "name": "geolite2-redist",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Redistribution of Maxmind's GeoLite2 Free Databases (without License Key)",
   "main": "index.js",
   "keywords": [
@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/runk/node-geolite2.git"
+    "url": "git+https://github.com/GitSquared/node-geolite2-redist.git"
   },
   "author": "Gabriel SAILLARD <gabriel@saillard.dev>",
   "license": "SEE LICENSE IN LICENSE",
@@ -31,7 +31,6 @@
   },
   "homepage": "https://github.com/GitSquared/node-geolite2-redist#readme",
   "dependencies": {
-    "sha384": "^1.0.0",
     "tar": "^5.0.5"
   },
   "devDependencies": {
