@@ -7,6 +7,11 @@ then
 	exit 1
 fi
 
+echo "Cloning a clean state..."
+git clone https://github.com/${TRAVIS_REPO_SLUG}.git clone
+
+cd clone
+
 echo "Cleaning previous databases from git objects..."
 
 ./scripts/clean-git-objects
