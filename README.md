@@ -1,7 +1,7 @@
-node-geolite2-redist [![Build Status](https://travis-ci.org/GitSquared/node-geolite2-redist.png)](https://travis-ci.org/GitSquared/node-geolite2-redist)
+node-geolite2-redist [![Build Status](https://travis-ci.com/GitSquared/node-geolite2-redist.svg?token=6oyzeLqWVCTbE2R5reLd&branch=master)](https://travis-ci.org/GitSquared/node-geolite2-redist)
 ========
 
-A redistribution of MaxMind's GeoLite2 free databases as an npm library.
+MaxMind's GeoLite2 free databases as an npm library. **As this is a redistribution, you don't need a MaxMind license key.** However, additional restrictions apply, and while they should be transparent to most users, **you should read this README and the LICENSE file carefully before deciding to use this.**
 
 You will need a database reader capable of reading `.mmdb` files, like [node-maxmind](https://www.npmjs.com/package/maxmind), if you wish to use the data.
 
@@ -12,7 +12,7 @@ This package contains the 3 GeoLite2 databases, namely:
 
 For more info check out the [MaxMind website](https://maxmind.com).
 
-Due to license requirements, this package automatically updates the databases in the background when it detects that a new version is available.
+Due to license requirements, **this package automatically updates the databases in the background** when it detects that a new version is available.
 
 See [Warning](#warning) section for more info.
 
@@ -126,7 +126,7 @@ Please carefully read the LICENSE and EULA files. This package comes with certai
    - for FCRA purposes,
    - to identify specific households or individuals.
 
-This library's licensing is not suitable for commercial projects.
+**This library's licensing is not suitable for commercial projects distribution.**
 
 If you plan on using `node-geolite2` behind a firewall, you need to whitelist the `raw.githubusercontent.com` IP range for the database updates.
 
@@ -134,4 +134,6 @@ If you plan on using `node-geolite2` behind a firewall, you need to whitelist th
 
 See [LICENSE](https://github.com/GitSquared/node-geolite2-redist/blob/master/LICENSE).
 
-This product includes GeoLite2 data created by MaxMind, available from [https://www.maxmind.com](https://www.maxmind.com).
+---
+
+**This product includes GeoLite2 data created by MaxMind, available from [https://www.maxmind.com](https://www.maxmind.com).**
