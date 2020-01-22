@@ -1,9 +1,9 @@
 const fs = require('fs');
+const crypto = require('crypto');
 const https = require('https');
 const zlib = require('zlib');
 const path = require('path');
 const tar = require('tar');
-const sha384 = require('sha384');
 
 const link = file => `https://raw.githubusercontent.com/GitSquared/node-geolite2-redist/master/redist/${file}`;
 
@@ -100,7 +100,10 @@ function verifyAllChecksums(downloadPath) {
 					reject(err);
 				}
 
-				if (sha384(buffer).toString('hex') === edition.checksum) {
+				let hash = crypto.createHash('sha384');
+				checksum = hash.update(buffer, 'binary', 'hex');
+				checksum = checksum.digest('hex');
+				if (checksum === edition.checksum) {
 					resolve();
 				} else {
 					reject(new Error(`Mismatched checksums for ${edition.name}`));
