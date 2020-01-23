@@ -100,7 +100,7 @@ function verifyAllChecksums(downloadPath) {
 					reject(err);
 				}
 
-				let checksum = crypto.createHash('sha384').update(buffer, 'binary', 'hex').digest('hex');
+				const checksum = crypto.createHash('sha384').update(buffer, 'binary', 'hex').digest('hex');
 				if (checksum === edition.checksum) {
 					resolve();
 				} else {
