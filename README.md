@@ -1,5 +1,8 @@
-node-geolite2-redist [![Build Status](https://travis-ci.com/GitSquared/node-geolite2-redist.svg?token=6oyzeLqWVCTbE2R5reLd&branch=master)](https://travis-ci.org/GitSquared/node-geolite2-redist)
-========
+# node-geolite2-redist
+
+[![Build Status](https://travis-ci.com/GitSquared/node-geolite2-redist.svg?token=6oyzeLqWVCTbE2R5reLd&branch=master)](https://travis-ci.org/GitSquared/node-geolite2-redist) ![NPM published version](https://badgen.net/npm/v/geolite2-redist) ![Node version](https://badgen.net/npm/node/geolite2-redist) ![Types Status](https://badgen.net/npm/types/geolite2-redist) ![Install size](https://badgen.net/packagephobia/install/geolite2-redist)
+
+---
 
 MaxMind's GeoLite2 free databases as an npm library. **As this is a redistribution, you don't need a MaxMind license key.** However, additional restrictions apply, and while they should be transparent to most users, **you should read this README and the LICENSE file carefully before deciding to use this.**
 
