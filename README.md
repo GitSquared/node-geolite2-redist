@@ -83,6 +83,26 @@ dbWatcher.on('update', () => {
 dbWatcher.close();
 ```
 
+### Usage with TypeScript
+
+This package includes its own types and you can pass the response type in `open`:
+
+```ts
+import geolite2 from 'geolite2-redist';
+import maxmind, { CityResponse } from 'maxmind';
+
+(async () => {
+  let lookup = await geolite2.open<CityResponse>('GeoLite2-City', path => {
+    return maxmind.open(path);
+  });
+
+  let city = lookup.get('66.6.44.4');
+
+  // Call this when done to empty node's event loop
+  lookup.close();
+})();
+```
+
 ## API
 
 ### Methods
