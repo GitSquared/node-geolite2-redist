@@ -4,6 +4,9 @@
   "description": "Redistribution of Maxmind's GeoLite2 Free Databases (without License Key)",
   "main": "index.js",
   "types": "index.d.ts",
+  "engines": {
+    "node": ">= 10.18.1"
+  },
   "keywords": [
     "maxmind",
     "mmdb",
