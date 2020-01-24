@@ -1,6 +1,6 @@
 {
   "name": "geolite2-redist",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Redistribution of Maxmind's GeoLite2 Free Databases (without License Key)",
   "main": "index.js",
   "types": "index.d.ts",
