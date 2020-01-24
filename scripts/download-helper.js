@@ -21,9 +21,12 @@ function fetchChecksums() {
 	const newChecksums = [];
 
 	const downloads = editions.map(edition => {
-		return new Promise(resolve => {
+		return new Promise((resolve, reject) => {
 			https.get(edition.checksumURL, res => {
 				let checksum = '';
+				res.on('error', error => {
+					reject(error);
+				});
 				res.on('data', chunk => {
 					checksum += chunk.toString();
 				});
