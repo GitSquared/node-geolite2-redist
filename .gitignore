@@ -3,6 +3,7 @@ redist/*.mmdb
 
 # Downloaded databases
 dbs/
+dbs-tmp/
 
 # Logs
 logs

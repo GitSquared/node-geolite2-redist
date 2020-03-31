@@ -10,6 +10,7 @@ scripts/update-databases
 # ----
 # Downloaded databases
 dbs/
+dbs-tmp/
 
 # Logs
 logs

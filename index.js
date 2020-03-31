@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const {EventEmitter} = require('events');
 
 const downloadHelper = require('./scripts/download-helper.js');
@@ -22,6 +23,11 @@ class UpdateSubscriber extends EventEmitter {
 			this.checkUpdates();
 		}, updateTimer);
 		this.checkUpdates();
+
+		// Clean up failed download files
+		fs.rmdir(downloadPath+'-tmp', { recursive: true }, e => {
+			// folder did not exist
+		});
 
 		return this;
 	}
@@ -48,14 +54,23 @@ class UpdateSubscriber extends EventEmitter {
 		this.downloading = true;
 		this.emit('downloading');
 
-		downloadHelper.fetchDatabases(downloadPath).then(() => {
-			return downloadHelper.verifyAllChecksums(downloadPath);
-		}).then(() => {
-			this.emit('update', downloadHelper.getEditions());
-		}).catch(error => {
-			console.warn('geolite2 self-update error:', error);
-		}).finally(() => {
-			this.downloading = false;
+		fs.mkdir(downloadPath+'-tmp', () => {
+			downloadHelper.fetchDatabases(downloadPath+'-tmp').then(() => {
+				return downloadHelper.verifyAllChecksums(downloadPath+'-tmp');
+			}).then(() => {
+				fs.rmdir(downloadPath, { recursive: true }, e => {
+					if (e) throw(e);
+					fs.rename(downloadPath+'-tmp', downloadPath, e => {
+						if (e) throw(e);
+						this.emit('update', downloadHelper.getEditions());
+					});
+				});
+			}).catch(error => {
+				console.warn('geolite2 self-update error:', error);
+				fs.rmdir(downloadPath+'-tmp', { recursive: true });
+			}).finally(() => {
+				this.downloading = false;
+			});
 		});
 	}
 
