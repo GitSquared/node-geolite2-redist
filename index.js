@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const {EventEmitter} = require('events');
+const rimraf = require('rimraf');
 
 const downloadHelper = require('./scripts/download-helper.js');
 const downloadPath = path.resolve(__dirname, 'dbs');
@@ -25,7 +26,7 @@ class UpdateSubscriber extends EventEmitter {
 		this.checkUpdates();
 
 		// Clean up failed download files
-		fs.rmdir(downloadPath+'-tmp', { recursive: true }, e => {
+		rimraf(downloadPath+'-tmp', e => {
 			// folder did not exist
 		});
 
@@ -58,7 +59,7 @@ class UpdateSubscriber extends EventEmitter {
 			downloadHelper.fetchDatabases(downloadPath+'-tmp').then(() => {
 				return downloadHelper.verifyAllChecksums(downloadPath+'-tmp');
 			}).then(() => {
-				fs.rmdir(downloadPath, { recursive: true }, e => {
+				rimraf(downloadPath, e => {
 					if (e) throw(e);
 					fs.rename(downloadPath+'-tmp', downloadPath, e => {
 						if (e) throw(e);
@@ -67,7 +68,7 @@ class UpdateSubscriber extends EventEmitter {
 				});
 			}).catch(error => {
 				console.warn('geolite2 self-update error:', error);
-				fs.rmdir(downloadPath+'-tmp', { recursive: true });
+				rimraf(downloadPath+'-tmp');
 			}).finally(() => {
 				this.downloading = false;
 			});
