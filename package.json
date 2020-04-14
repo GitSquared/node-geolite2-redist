@@ -1,11 +1,11 @@
 {
   "name": "geolite2-redist",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Redistribution of Maxmind's GeoLite2 Free Databases (without License Key)",
   "main": "index.js",
   "types": "index.d.ts",
   "engines": {
-    "node": ">= 12.10.0"
+    "node": ">= 10.0.0"
   },
   "keywords": [
     "maxmind",
@@ -35,6 +35,7 @@
   },
   "homepage": "https://github.com/GitSquared/node-geolite2-redist#readme",
   "dependencies": {
+    "rimraf": "^3.0.2",
     "tar": "^6.0.1"
   },
   "devDependencies": {
