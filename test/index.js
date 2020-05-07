@@ -1,6 +1,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const geolite2 = require('../');
+const rimraf = require('rimraf');
 const maxmind = require('maxmind');
 
 describe('geolite2', function() {
@@ -41,9 +42,11 @@ describe('geolite2.UpdateSubscriber', function() {
   describe('#checkUpdates()', function() {
     it('should be able to check updates again', function() {
       return new Promise((resolve, reject) => {
-        updateSubscriber.checkUpdates();
-        updateSubscriber.once('checking', () => {
-          resolve();
+        updateSubscriber.once('done checking', () => {
+          updateSubscriber.checkUpdates();
+          updateSubscriber.once('checking', () => {
+            resolve();
+          });
         });
       });
     });
@@ -60,10 +63,15 @@ describe('geolite2.UpdateSubscriber', function() {
           });
         } else {
           // Trigger download
-          updateSubscriber.triggerUpdate();
-          updateSubscriber.once('downloading', () => {
-            updateSubscriber.once('update', () => {
-              resolve();
+          updateSubscriber.once('done checking', () => {
+            rimraf(require('path').resolve(__dirname, '../dbs'), e => {
+              if (e) throw(e);
+              updateSubscriber.checkUpdates();
+              updateSubscriber.once('downloading', () => {
+                updateSubscriber.once('update', () => {
+                  resolve();
+                });
+              });
             });
           });
         }
@@ -123,17 +131,19 @@ describe('geolite2.open', function() {
 
       lookup._test_reader_replacement = 'control';
 
-      assert(lookup._geolite2_triggerUpdate === 'OK');
-
       return new Promise((resolve, reject) => {
-        lookup._geolite2_subscriber.once('update', () => {
-          setTimeout(() => {
-            if (lookup._test_reader_replacement === 'control') {
-              reject(new Error('Reader instance wasn\'t updated'));
-            } else {
-              resolve();
-            }
-          }, 500);
+        rimraf(require('path').resolve(__dirname, '../dbs'), e => {
+          if (e) throw(e);
+          assert(lookup._geolite2_triggerUpdateCheck === 'OK');
+          lookup._geolite2_subscriber.once('update', () => {
+            setTimeout(() => {
+              if (lookup._test_reader_replacement === 'control') {
+                reject(new Error('Reader instance wasn\'t updated'));
+              } else {
+                resolve();
+              }
+            }, 500);
+          });
         });
       });
     });
@@ -175,17 +185,19 @@ describe('geolite2.open', function() {
 
       lookup._test_reader_replacement = 'control';
 
-      assert(lookup._geolite2_triggerUpdate === 'OK');
-
       return new Promise((resolve, reject) => {
-        lookup._geolite2_subscriber.once('update', () => {
-          setTimeout(() => {
-            if (lookup._test_reader_replacement === 'control') {
-              reject(new Error('Reader instance wasn\'t updated'));
-            } else {
-              resolve();
-            }
-          }, 500);
+        rimraf(require('path').resolve(__dirname, '../dbs'), e => {
+          if (e) throw(e);
+          assert(lookup._geolite2_triggerUpdateCheck === 'OK');
+          lookup._geolite2_subscriber.once('update', () => {
+            setTimeout(() => {
+              if (lookup._test_reader_replacement === 'control') {
+                reject(new Error('Reader instance wasn\'t updated'));
+              } else {
+                resolve();
+              }
+            }, 500);
+          });
         });
       });
     });
