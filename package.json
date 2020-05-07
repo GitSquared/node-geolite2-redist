@@ -18,11 +18,7 @@
   ],
   "scripts": {
     "postinstall": "node scripts/postinstall.js",
-    "lint": "xo",
     "test": "mocha --check-leaks --bail --grep ${npm_config_grep:-''} --recursive --timeout 1s --inline-diffs test"
-  },
-  "xo": {
-    "ignores": "test/"
   },
   "repository": {
     "type": "git",
@@ -36,11 +32,10 @@
   "homepage": "https://github.com/GitSquared/node-geolite2-redist#readme",
   "dependencies": {
     "rimraf": "^3.0.2",
-    "tar": "^6.0.1"
+    "tar": "^6.0.2"
   },
   "devDependencies": {
     "maxmind": "^4.1.1",
-    "mocha": "^7.1.1",
-    "xo": "^0.28.1"
+    "mocha": "^7.1.2"
   }
 }
