@@ -19,6 +19,7 @@ class UpdateSubscriber extends EventEmitter {
 		super();
 
 		this.downloading = false;
+		this.checking = false;
 
 		this._checker = setInterval(() => {
 			this.checkUpdates();
@@ -34,17 +35,34 @@ class UpdateSubscriber extends EventEmitter {
 	}
 
 	async checkUpdates() {
-		// Leave time for listeners to be up
-		await this._wait(200);
+		if (this.checking) {
+			return;
+		}
 
-		this.emit('checking');
-		downloadHelper.fetchChecksums().then(() => {
-			return downloadHelper.verifyAllChecksums(downloadPath);
-		}).then(() => {
-			// All checksums match, no update
-		}).catch(() => {
-			this.update();
-		});
+		this.checking = true;
+
+		try {
+			// Leave time for listeners to be up
+			await this._wait(200);
+
+			this.emit('checking');
+			try {
+				await downloadHelper.fetchChecksums();
+				return await downloadHelper.verifyAllChecksums(downloadPath);
+			}
+			catch (ex) {
+				this.update();
+			};
+		}
+		finally {
+			this.checking = false;
+		}
+	}
+
+	// Backward compat
+	triggerUpdate() {
+		console.warn('geolite2-redist: triggerUpdate() is deprecated');
+		return Promise.resolve();
 	}
 
 	update() {
@@ -75,18 +93,6 @@ class UpdateSubscriber extends EventEmitter {
 		});
 	}
 
-	async triggerUpdate() {
-		await this._wait(100);
-
-		downloadHelper.fetchChecksums().then(() => {
-			return downloadHelper.verifyAllChecksums(downloadPath);
-		}).then(() => {
-			this.update();
-		}).catch(error => {
-			console.warn('geolite2 self-update error:', error);
-		});
-	}
-
 	close() {
 		clearInterval(this._checker);
 	}
@@ -99,55 +105,48 @@ class UpdateSubscriber extends EventEmitter {
 }
 
 function wrapReader(reader, readerBuilder, db) {
-	const proxyObject = {
-		reader,
-		database: db,
-		lastUpdateCheck: 0,
-		subscriber: null
-	};
+	const subscriber = new UpdateSubscriber();
+	subscriber.on('update', async () => {
+		reader = await readerBuilder(paths[db]);
+	});
 
-	return new Proxy(proxyObject, {
-		get: (proxyObject, prop) => {
-			if (!proxyObject.subscriber) {
-				proxyObject.subscriber = new UpdateSubscriber();
-
-				proxyObject.subscriber.on('update', async () => {
-					proxyObject.reader = await readerBuilder(paths[proxyObject.database]);
-				});
-
-				proxyObject.subscriber.on('checking', () => {
-					proxyObject.lastUpdateCheck = Date.now();
-				});
-			}
-
-			if (Date.now() - proxyObject.lastUpdateCheck > updateTimer || prop === '_geolite2_triggerUpdateCheck') {
-				proxyObject.subscriber.checkUpdates();
-				if (prop === '_geolite2_triggerUpdateCheck') {
+	return new Proxy({}, {
+		get: (_, prop) => {
+			switch (prop) {
+				case '_geolite2_triggerUpdateCheck':
+					subscriber.checkUpdates();
 					return 'OK';
-				}
-			}
 
-			if (prop === '_geolite2_triggerUpdate') {
-				proxyObject.subscriber.triggerUpdate();
-				return 'OK';
-			}
+				case '_geolite2_triggerUpdate':
+					// Keep this in for backward compat
+					return 'OK';
 
-			if (prop === '_geolite2_subscriber') {
-				return proxyObject.subscriber;
-			}
+				case '_geolite2_subscriber':
+					return subscriber;
 
-			if (prop === 'close') {
-				proxyObject.subscriber.close();
-				proxyObject.reader = {};
-				return () => {
-					return true;
-				};
-			}
+				case 'close':
+					return () => {
+						subscriber.close();
+						reader = {};
+						return true;
+					};
 
-			return proxyObject.reader[prop];
+				default:
+					return reader[prop];
+			}
 		},
-		set: (proxyObject, prop, value) => {
-			proxyObject.reader[prop] = value;
+		set: (_, prop, value) => {
+			switch (prop) {
+				case '_geolite2_triggerUpdateCheck':
+				case '_geolite2_triggerUpdate':
+				case '_geolite2_subscriber':
+				case 'close':
+					throw new Error('Invalid property setter');
+
+				default:
+					reader[prop] = value;
+					break;
+			}
 		}
 	});
 }
