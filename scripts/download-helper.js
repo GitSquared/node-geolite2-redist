@@ -99,8 +99,9 @@ function verifyAllChecksums(downloadPath) {
 	const promises = editions.map(edition => {
 		return new Promise((resolve, reject) => {
 			fs.readFile(path.join(downloadPath, edition.name + '.mmdb'), (err, buffer) => {
-				if (err) {
+				if (err || typeof buffer === 'undefined') {
 					reject(err);
+					return;
 				}
 
 				const checksum = crypto.createHash('sha384').update(buffer, 'binary', 'hex').digest('hex');

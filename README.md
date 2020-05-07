@@ -136,9 +136,9 @@ Internal class used to automatically update databases, exposed to allow advanced
    - `update` Emitted when new databases have been written to the filesystem.
  - **Methods**
    - *checkUpdates()* Checks for new database updates and downloads them.
-   - *triggerUpdate()* Replaces the current databases with fresh copies from the mirror.
    - *close()* Shuts down the updater.
  - **Props**
+   - `checking`: `<boolean>` Whether databases are being checked for updates in the background right now - see `checking` event.
    - `downloading`: `<boolean>` Whether databases are being downloaded in the background right now - see `downloading` event.
 
 ## Warning
