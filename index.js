@@ -56,6 +56,7 @@ class UpdateSubscriber extends EventEmitter {
 		}
 		finally {
 			this.checking = false;
+			this.emit('done checking');
 		}
 	}
 
