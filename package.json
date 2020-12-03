@@ -20,6 +20,12 @@
     "postinstall": "node scripts/postinstall.js",
     "test": "mocha --check-leaks --bail --grep ${npm_config_grep:-''} --recursive --timeout 1s --inline-diffs test"
   },
+  "husky": {
+    "hooks": {
+      "prepare-commit-msg": "komit $HUSKY_GIT_PARAMS",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GitSquared/node-geolite2-redist.git"
@@ -35,6 +41,10 @@
     "tar": "^6.0.2"
   },
   "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "husky": "^4.3.0",
+    "komit": "^1.0.5",
     "maxmind": "^4.1.1",
     "mocha": "^7.1.2"
   }
