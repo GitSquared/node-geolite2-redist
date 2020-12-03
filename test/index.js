@@ -5,13 +5,13 @@ const geolite2 = require('../');
 const rimraf = require('rimraf');
 const maxmind = require('maxmind');
 
-describe('geolite2', async function() {
-  const paths = {
-    'GeoLite2-ASN': path.resolve('../dbs/GeoLite2-ASN.mmdb'),
-    'GeoLite2-Country': path.resolve('../dbs/GeoLite2-Country.mmdb'),
-    'GeoLite2-City': path.resolve('../dbs/GeoLite2-City.mmdb')
-  };
+const paths = {
+ 'GeoLite2-ASN': path.resolve('dbs/GeoLite2-ASN.mmdb'),
+ 'GeoLite2-Country': path.resolve('dbs/GeoLite2-Country.mmdb'),
+ 'GeoLite2-City': path.resolve('dbs/GeoLite2-City.mmdb')
+};
 
+describe('geolite2', async function() {
   it('should contain a valid ASN db', function() {
     let stat = fs.statSync(paths['GeoLite2-ASN']);
     assert(stat.size > 1e6);
@@ -88,19 +88,19 @@ describe('geolite2.UpdateSubscriber', function() {
     it('should retrieve a valid ASN db', function() {
       updateSubscriber.close();
 
-      let stat = fs.statSync(geolite2.paths['GeoLite2-ASN']);
+      let stat = fs.statSync(paths['GeoLite2-ASN']);
       assert(stat.size > 1e6);
       assert(stat.ctime);
     });
 
     it('should retrieve a valid country db', function() {
-      let stat = fs.statSync(geolite2.paths['GeoLite2-Country']);
+      let stat = fs.statSync(paths['GeoLite2-Country']);
       assert(stat.size > 1e6);
       assert(stat.ctime);
     });
 
     it('should retrieve a valid city db', function() {
-      let stat = fs.statSync(geolite2.paths['GeoLite2-City']);
+      let stat = fs.statSync(paths['GeoLite2-City']);
       assert(stat.size > 1e6);
       assert(stat.ctime);
     });
