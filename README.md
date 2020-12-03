@@ -149,7 +149,7 @@ Please carefully read the LICENSE and EULA files. This package comes with certai
    - for FCRA purposes,
    - to identify specific households or individuals.
 
-**This library's licensing is not suitable for commercial projects distribution.**
+**The databases provided by MaxMind are licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)**
 
 If you plan on using `node-geolite2` behind a firewall, you need to whitelist the `raw.githubusercontent.com` IP range for the database updates.
 
