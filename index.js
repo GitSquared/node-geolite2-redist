@@ -4,11 +4,11 @@ const {EventEmitter} = require('events');
 const rimraf = require('rimraf');
 
 const downloadHelper = require('./scripts/download-helper.js');
-const downloadPath = path.resolve(__dirname, 'dbs');
+let downloadPath = path.resolve(__dirname, 'dbs');
 
 const updateTimer = 2 * 24 * 60 * 60 * 1000; // 48 hours in ms
 
-const paths = {
+let paths = {
 	'GeoLite2-ASN': path.join(downloadPath, 'GeoLite2-ASN.mmdb'),
 	'GeoLite2-City': path.join(downloadPath, 'GeoLite2-City.mmdb'),
 	'GeoLite2-Country': path.join(downloadPath, 'GeoLite2-Country.mmdb')
@@ -176,8 +176,36 @@ function open(database, readerBuilder) {
 	return wrapReader(reader, readerBuilder, database);
 }
 
+function downloadDbs(newpath) {
+	downloadPath = path.resolve(__dirname, 'dbs')
+	if (newpath) downloadPath = path.resolve(newpath);
+	if (!fs.existsSync(downloadPath)) {
+		fs.mkdirSync(downloadPath, { resursive: true })
+	}
+	paths = {
+		'GeoLite2-ASN': path.join(downloadPath, 'GeoLite2-ASN.mmdb'),
+		'GeoLite2-City': path.join(downloadPath, 'GeoLite2-City.mmdb'),
+		'GeoLite2-Country': path.join(downloadPath, 'GeoLite2-Country.mmdb')
+	};
+
+	return new Promise(resolve => {
+	const us = new UpdateSubscriber()
+		us.once('update', () => {
+			us.close()
+			resolve()
+		})
+		us.update()
+	})
+}
+
 module.exports = {
 	open,
+	downloadDbs,
 	UpdateSubscriber,
-	paths
+	databases: [
+		'GeoLite2-ASN',
+		'GeoLite2-City',
+		'GeoLite2-Country'
+	],
+	downloadPath
 };

@@ -32,6 +32,7 @@ const geolite2 = require('geolite2-redist');
 const maxmind = require('maxmind');
 
 (async () => {
+  await geolite2.downloadDbs()
   let lookup = await geolite2.open('GeoLite2-City', path => {
     return maxmind.open(path);
   });
@@ -51,28 +52,33 @@ const geolite2 = require('geolite2-redist');
 const maxmind = require('maxmind');
 const fs = require('fs');
 
-let lookup = geolite2.open('GeoLite2-City', path => {
-  let buf = fs.readFileSync(path);
-  return new maxmind.Reader(buf);
-});
+geolite2.downloadDbs().then(() => {
+	let lookup = geolite2.open('GeoLite2-City', path => {
+	  let buf = fs.readFileSync(path);
+	  return new maxmind.Reader(buf);
+	});
 
-let city = lookup.get('66.6.44.4');
+	let city = lookup.get('66.6.44.4');
 
-lookup.close();
+	lookup.close();
+})
 ```
 
 ### Advanced usage
 
-If you do not consume the databases directly, or need more flexible methods, the internal `geolite2.UpdateSubscriber` class is exposed so you can directly listen to database update events.
+If you do not consume the databases directly, or need more flexible methods, the internal `geolite2.UpdateSubscriber` class is exposed so you can directly listen to database update events. You can also choose where to download the databases.
 
 Example usage:
 ```javascript
 const geolite2 = require('geolite2-redist');
 
+const dbBasePath = '/tmp/maxmind'
+
 function useGeolite() {
-  // You can retrieve the path to `.mmdb` files
-  let cityPath = geolite2.paths['GeoLite2-City'];
+  // Do something with the databases
 }
+
+await geolite2.downloadDbs(dbBasePath)
 
 const dbWatcher = new geolite2.UpdateSubscriber();
 dbWatcher.on('update', () => {
@@ -92,6 +98,7 @@ import geolite2 from 'geolite2-redist';
 import maxmind, { CityResponse } from 'maxmind';
 
 (async () => {
+  await geolite2.downloadDbs()
   let lookup = await geolite2.open<CityResponse>('GeoLite2-City', path => {
     return maxmind.open(path);
   });
@@ -107,6 +114,12 @@ import maxmind, { CityResponse } from 'maxmind';
 
 ### Methods
 
+*geolite2.downloadDbs(path?)*
+
+This function returns a Promise that resolves when GeoIP databases have been succesfully retrieved from the redistribution.
+
+ - `path`: `(optional) <string>` Filesystem path to use for storing databases. Can be relative, defaults to '../dbs'.
+
 *geolite2.open(database, databaseReader)*
 
  - `database`: `<string>` One of `GeoLite2-ASN`, `GeoLite2-Country`, `GeoLite2-City`.
@@ -116,12 +129,12 @@ import maxmind, { CityResponse } from 'maxmind';
 
 ### Properties
 
-*geolite2.paths* `<object>`
+*geolite2.databases* `<object>`
 
-Full fs paths for each database. **Warning:** you need to let the library update the databases automatically, see Usage section.
- - `GeoLite2-ASN`: `<string>`
- - `GeoLite2-Country`: `<string>`
- - `GeoLite2-City`: `<string>`
+See what databases you can use with `open()`. **Warning:** you need to let the library update the databases automatically, see Usage section.
+ - `GeoLite2-ASN`
+ - `GeoLite2-Country`
+ - `GeoLite2-City`
 
 ### Classes
 
