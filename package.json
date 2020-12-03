@@ -1,6 +1,6 @@
 {
   "name": "geolite2-redist",
-  "version": "1.0.7",
+  "version": "2.0.0",
   "description": "Redistribution of Maxmind's GeoLite2 Free Databases (without License Key)",
   "main": "index.js",
   "types": "index.d.ts",
@@ -17,8 +17,8 @@
     "geo lookup"
   ],
   "scripts": {
-    "postinstall": "node scripts/postinstall.js",
-    "test": "mocha --check-leaks --bail --grep ${npm_config_grep:-''} --recursive --timeout 1s --inline-diffs test"
+    "preload": "node scripts/preload-all.js",
+    "test": "npm run preload && mocha --check-leaks --bail --grep ${npm_config_grep:-''} --recursive --timeout 1s --inline-diffs test"
   },
   "husky": {
     "hooks": {
