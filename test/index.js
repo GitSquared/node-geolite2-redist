@@ -12,8 +12,6 @@ describe('geolite2', async function() {
     'GeoLite2-City': path.resolve('../dbs/GeoLite2-City.mmdb')
   };
 
-  await geolite2.downloadDbs()
-
   it('should contain a valid ASN db', function() {
     let stat = fs.statSync(paths['GeoLite2-ASN']);
     assert(stat.size > 1e6);
