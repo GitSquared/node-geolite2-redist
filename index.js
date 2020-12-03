@@ -49,9 +49,8 @@ class UpdateSubscriber extends EventEmitter {
 			try {
 				await downloadHelper.fetchChecksums();
 				return await downloadHelper.verifyAllChecksums(downloadPath);
-			}
-			catch (ex) {
-				this.update();
+			} catch (ex) {
+				await this.update();
 			};
 		}
 		finally {
@@ -67,29 +66,32 @@ class UpdateSubscriber extends EventEmitter {
 	}
 
 	update() {
-		if (this.downloading) {
-			return false;
-		}
+		return new Promise(resolve => {
+			if (this.downloading) {
+				resolve(false);
+			}
 
-		this.downloading = true;
-		this.emit('downloading');
+			this.downloading = true;
+			this.emit('downloading');
 
-		fs.mkdir(downloadPath+'-tmp', () => {
-			downloadHelper.fetchDatabases(downloadPath+'-tmp').then(() => {
-				return downloadHelper.verifyAllChecksums(downloadPath+'-tmp');
-			}).then(() => {
-				rimraf(downloadPath, e => {
-					if (e) throw(e);
-					fs.rename(downloadPath+'-tmp', downloadPath, e => {
+			fs.mkdir(downloadPath+'-tmp', () => {
+				downloadHelper.fetchDatabases(downloadPath+'-tmp').then(() => {
+					return downloadHelper.verifyAllChecksums(downloadPath+'-tmp');
+				}).then(() => {
+					rimraf(downloadPath, e => {
 						if (e) throw(e);
-						this.emit('update', downloadHelper.getEditions());
+						fs.rename(downloadPath+'-tmp', downloadPath, e => {
+							if (e) throw(e);
+							this.emit('update', downloadHelper.getEditions());
+						});
 					});
+				}).catch(error => {
+					console.warn('geolite2 self-update error:', error);
+					rimraf(downloadPath+'-tmp');
+				}).finally(() => {
+					this.downloading = false;
+					resolve()
 				});
-			}).catch(error => {
-				console.warn('geolite2 self-update error:', error);
-				rimraf(downloadPath+'-tmp');
-			}).finally(() => {
-				this.downloading = false;
 			});
 		});
 	}
@@ -190,6 +192,10 @@ function downloadDbs(newpath) {
 
 	return new Promise(resolve => {
 	const us = new UpdateSubscriber()
+		us.once('update', () => {
+			us.close()
+			resolve()
+		})
 		us.once('update', () => {
 			us.close()
 			resolve()
