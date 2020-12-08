@@ -38,14 +38,14 @@
   "homepage": "https://github.com/GitSquared/node-geolite2-redist#readme",
   "dependencies": {
     "rimraf": "^3.0.2",
-    "tar": "^6.0.2"
+    "tar": "^6.0.5"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
-    "husky": "^4.3.0",
+    "husky": "^4.3.5",
     "komit": "^1.0.5",
-    "maxmind": "^4.1.1",
-    "mocha": "^7.1.2"
+    "maxmind": "^4.3.1",
+    "mocha": "^8.2.1"
   }
 }
