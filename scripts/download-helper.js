@@ -79,7 +79,19 @@ function fetchDatabases(outPath) {
 				res.on('entry', entry => {
 					if (entry.path.endsWith('.mmdb')) {
 						const dstFilename = path.join(outPath, path.basename(entry.path));
-						entry.pipe(fs.createWriteStream(dstFilename));
+						let outStream;
+						try {
+							outStream = fs.createWriteStream(dstFilename)
+						} catch(e) {
+							reject(e)
+						}
+						outStream.on('error', e => {
+							reject(e)
+						})
+						entry.on('error', e => {
+							reject(e);
+						})
+						entry.pipe(outStream);
 					}
 				});
 				res.on('error', e => {
