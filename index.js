@@ -27,7 +27,7 @@ class UpdateSubscriber extends EventEmitter {
 		this.checkUpdates();
 
 		// Clean up failed download files
-		rimraf(downloadPath+'-tmp', e => {
+		rimraf(downloadPath+'-tmp', _ => {
 			// folder did not exist
 		});
 
@@ -87,7 +87,9 @@ class UpdateSubscriber extends EventEmitter {
 					});
 				}).catch(error => {
 					console.warn('geolite2 self-update error:', error);
-					rimraf(downloadPath+'-tmp');
+					rimraf(downloadPath+'-tmp', _ => {
+						// no junk to clean up
+					});
 				}).finally(() => {
 					this.downloading = false;
 					resolve()
