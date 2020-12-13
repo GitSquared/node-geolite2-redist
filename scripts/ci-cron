@@ -38,7 +38,7 @@ then
 fi
 
 git add redist
-git commit -m "chore(redist): update databases - cron job GH-$GITHUB_RUN_NUMBER" -m "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" --author "GitHub Actions <bot@example.com>" --no-verify
+git commit -m "chore(redist): update databases - cron job GH-$GITHUB_RUN_NUMBER" -m "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" --no-verify
 git push --force "https://$GITHUB_PUSH_TOKEN@github.com/$GITHUB_REPOSITORY.git" master
 
 echo "Updates pushed to GitHub remote"
