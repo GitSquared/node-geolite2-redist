@@ -39,9 +39,17 @@ fi
 
 git add redist
 git config user.name "GitHub Actions Robot"
-git conig user.email "bot@example.com"
+git config user.email "bot@example.com"
 git commit -m "chore(redist): update databases - cron job GH-${GITHUB_RUN_NUMBER}" -m "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" --no-verify
-git push --force "https://${GITHUB_PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" master
-
-echo "Updates pushed to GitHub remote"
-exit 0
+stat=$?
+if [ $stat -ne 0 ]; then
+	exit 1
+fi
+git push --force "https://username:${GITHUB_PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" master
+stat=$?
+if [ $stat -ne 0 ]; then
+	exit 1
+else
+	echo "Updates pushed to GitHub remote"
+	exit 0
+fi
