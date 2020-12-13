@@ -1,6 +1,6 @@
 # node-geolite2-redist
 
-[![Build Status](https://travis-ci.com/GitSquared/node-geolite2-redist.svg?token=6oyzeLqWVCTbE2R5reLd&branch=master)](https://travis-ci.org/GitSquared/node-geolite2-redist) ![NPM published version](https://badgen.net/npm/v/geolite2-redist) ![Node version](https://badgen.net/npm/node/geolite2-redist) ![Types Status](https://badgen.net/npm/types/geolite2-redist)
+[![Automatic Redistribution Updates](https://github.com/GitSquared/node-geolite2-redist/workflows/Databases%20Updater/badge.svg?branch=master&event=schedule)](https://github.com/GitSquared/node-geolite2-redist/actions?query=workflow%3A%22Databases+Updater%22) ![NPM published version](https://badgen.net/npm/v/geolite2-redist) ![Node version](https://badgen.net/npm/node/geolite2-redist) ![Types Status](https://badgen.net/npm/types/geolite2-redist)
 
 ---
 
