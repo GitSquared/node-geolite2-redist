@@ -8,13 +8,13 @@ then
 fi
 
 echo "Cloning a clean state..."
-git clone "https://github.com/$GITHUB_REPOSITORY.git" clone
+git clone "https://github.com/${GITHUB_REPOSITORY}.git" clone
 
 cd clone
 
 echo "Cleaning previous databases from git objects..."
 
-./scripts/clean-git-objects
+./scripts/clean-git-objects > /dev/null
 stat=$?
 if [ $stat -ne 0 ]
 then
@@ -38,8 +38,10 @@ then
 fi
 
 git add redist
-git commit -m "chore(redist): update databases - cron job GH-$GITHUB_RUN_NUMBER" -m "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" --no-verify
-git push --force "https://$GITHUB_PUSH_TOKEN@github.com/$GITHUB_REPOSITORY.git" master
+git config user.name "GitHub Actions Robot"
+git conig user.email "bot@example.com"
+git commit -m "chore(redist): update databases - cron job GH-${GITHUB_RUN_NUMBER}" -m "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" --no-verify
+git push --force "https://${GITHUB_PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" master
 
 echo "Updates pushed to GitHub remote"
 exit 0
