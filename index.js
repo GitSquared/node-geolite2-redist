@@ -49,6 +49,7 @@ class UpdateSubscriber extends EventEmitter {
 			try {
 				await downloadHelper.fetchChecksums();
 				return await downloadHelper.verifyAllChecksums(downloadPath);
+				this.emit('up-to-date');
 			} catch (ex) {
 				await this.update();
 			};
@@ -193,8 +194,9 @@ function downloadDbs(newpath) {
 	};
 
 	return new Promise(resolve => {
-	const us = new UpdateSubscriber()
-		us.once('update', () => {
+		const us = new UpdateSubscriber()
+		us.once('up-to-date', () => {
+			// Databases are already good
 			us.close()
 			resolve()
 		})
@@ -202,7 +204,7 @@ function downloadDbs(newpath) {
 			us.close()
 			resolve()
 		})
-		us.update()
+		us.checkUpdates()
 	})
 }
 
