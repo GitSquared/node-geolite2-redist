@@ -48,7 +48,7 @@ class UpdateSubscriber extends EventEmitter {
 			this.emit('checking');
 			try {
 				await downloadHelper.fetchChecksums();
-				return await downloadHelper.verifyAllChecksums(downloadPath);
+				await downloadHelper.verifyAllChecksums(downloadPath);
 				this.emit('up-to-date');
 			} catch (ex) {
 				await this.update();
