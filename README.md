@@ -166,6 +166,10 @@ Please carefully read the LICENSE and EULA files. This package comes with certai
 
 If you plan on using `node-geolite2` behind a firewall, you need to whitelist the `raw.githubusercontent.com` IP range for the database updates.
 
+## Compatibility
+
+We follow Node's [deprecation schedule](https://nodejs.org/en/about/releases/) and support all LTS versions that are either active or in maintenance mode.
+
 ## License
 
 See [LICENSE](https://github.com/GitSquared/node-geolite2-redist/blob/master/LICENSE).
