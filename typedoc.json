@@ -1,0 +1,11 @@
+{
+  "entryPoints": "src/index.ts",
+  "tsconfig": "tsconfig.json",
+  "out": "docs",
+  "lightHighlightTheme": "light-plus",
+  "darkHighlightTheme": "dark-plus",
+  "includeVersion": true,
+  "excludeExternals": true,
+  "excludePrivate": true,
+  "excludeProtected": true
+}

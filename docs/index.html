@@ -1,0 +1,142 @@
+<!DOCTYPE html><html class="default"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>geolite2-redist - v3.0.0</title><meta name="description" content="Documentation for geolite2-redist - v3.0.0"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script async src="assets/search.js" id="search-script"></script></head><body><script>document.body.classList.add(localStorage.getItem("tsd-theme") || "os")</script><header><div class="tsd-page-toolbar"><div class="container"><div class="table-wrap"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget search no-caption">Search</label><input type="text" id="tsd-search-field"/></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">geolite2-redist - v3.0.0</a></div><div class="table-cell" id="tsd-widgets"><div id="tsd-filter"><a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a><div class="tsd-filter-group"><div class="tsd-select" id="tsd-filter-visibility"><span class="tsd-select-label">All</span><ul class="tsd-select-list"><li data-value="public">Public</li><li data-value="protected">Public/Protected</li><li data-value="private" class="selected">All</li></ul></div> <input type="checkbox" id="tsd-filter-inherited" checked/><label class="tsd-widget" for="tsd-filter-inherited">Inherited</label></div></div><a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a></div></div></div></div><div class="tsd-page-title"><div class="container"><h1>geolite2-redist - v3.0.0</h1></div></div></header><div class="container container-main"><div class="row"><div class="col-8 col-content"><div class="tsd-panel tsd-typography">
+<a href="#node-geolite2-redist" id="node-geolite2-redist" style="color: inherit; text-decoration: none;">
+  <h1>node-geolite2-redist</h1>
+</a>
+<p><a href="https://github.com/GitSquared/node-geolite2-redist/actions?query=workflow%3A%22Databases+Updater%22"><img src="https://github.com/GitSquared/node-geolite2-redist/workflows/Databases%20Updater/badge.svg?branch=master&event=schedule" alt="Automatic Redistribution Updates"></a> <img src="https://badgen.net/npm/v/geolite2-redist" alt="NPM published version"> <img src="https://badgen.net/npm/node/geolite2-redist" alt="Node version"> <img src="https://badgen.net/npm/types/geolite2-redist" alt="Types Status"></p>
+<hr>
+<p>MaxMind&#39;s GeoLite2 free databases as an npm library. <strong>As this is a redistribution, you don&#39;t need a MaxMind license key.</strong> However, additional restrictions apply, and while they should be transparent to most users, <strong>you should read this README and the LICENSE file carefully before deciding to use this.</strong></p>
+<p>You will need a database reader capable of reading <code>.mmdb</code> files, like <a href="https://www.npmjs.com/package/maxmind">node-maxmind</a>, if you wish to use the data.</p>
+<p>This package contains the 3 GeoLite2 databases, namely:</p>
+<ul>
+<li><code>GeoLite2-ASN</code></li>
+<li><code>GeoLite2-Country</code></li>
+<li><code>GeoLite2-City</code></li>
+</ul>
+<p>For more info check out the <a href="https://maxmind.com">MaxMind website</a>.</p>
+<p>Due to license requirements, <strong>this package automatically updates the databases in the background</strong> when it detects that a new version is available.</p>
+<p>See <a href="#warning">Warning</a> section for more info.</p>
+
+<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+  <h2>Usage</h2>
+</a>
+
+<a href="#using-the-geoip-data" id="using-the-geoip-data" style="color: inherit; text-decoration: none;">
+  <h3>Using the geoip data</h3>
+</a>
+<p>Example geoip lookup, using the <code>GeoLite2-City</code> database with <code>node-maxmind</code> as a db reader:</p>
+
+<a href="#async" id="async" style="color: inherit; text-decoration: none;">
+  <h4>Async</h4>
+</a>
+<pre><code class="language-javascript"><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">geolite2</span><span class="hl-1"> = </span><span class="hl-3">require</span><span class="hl-1">(</span><span class="hl-4">&#39;geolite2-redist&#39;</span><span class="hl-1">);</span><br/><br/><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">maxmind</span><span class="hl-1"> = </span><span class="hl-3">require</span><span class="hl-1">(</span><span class="hl-4">&#39;maxmind&#39;</span><span class="hl-1">);</span><br/><br/><span class="hl-1">(</span><span class="hl-0">async</span><span class="hl-1"> () </span><span class="hl-0">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">await</span><span class="hl-1"> </span><span class="hl-6">geolite2</span><span class="hl-1">.</span><span class="hl-3">downloadDbs</span><span class="hl-1">()</span><br/><span class="hl-1">  </span><span class="hl-0">let</span><span class="hl-1"> </span><span class="hl-6">lookup</span><span class="hl-1"> = </span><span class="hl-5">await</span><span class="hl-1"> </span><span class="hl-6">geolite2</span><span class="hl-1">.</span><span class="hl-3">open</span><span class="hl-1">(</span><span class="hl-4">&#39;GeoLite2-City&#39;</span><span class="hl-1">, </span><span class="hl-6">path</span><span class="hl-1"> </span><span class="hl-0">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-5">return</span><span class="hl-1"> </span><span class="hl-6">maxmind</span><span class="hl-1">.</span><span class="hl-3">open</span><span class="hl-1">(</span><span class="hl-6">path</span><span class="hl-1">);</span><br/><span class="hl-1">  });</span><br/><br/><span class="hl-1">  </span><span class="hl-0">let</span><span class="hl-1"> </span><span class="hl-6">city</span><span class="hl-1"> = </span><span class="hl-6">lookup</span><span class="hl-1">.</span><span class="hl-3">get</span><span class="hl-1">(</span><span class="hl-4">&#39;66.6.44.4&#39;</span><span class="hl-1">);</span><br/><br/><span class="hl-1">  </span><span class="hl-7">// Call this when done to empty node&#39;s event loop</span><br/><span class="hl-1">  </span><span class="hl-6">lookup</span><span class="hl-1">.</span><span class="hl-3">close</span><span class="hl-1">();</span><br/><span class="hl-1">})();</span>
+</code></pre>
+
+<a href="#sync" id="sync" style="color: inherit; text-decoration: none;">
+  <h4>Sync</h4>
+</a>
+<pre><code class="language-javascript"><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">geolite2</span><span class="hl-1"> = </span><span class="hl-3">require</span><span class="hl-1">(</span><span class="hl-4">&#39;geolite2-redist&#39;</span><span class="hl-1">);</span><br/><br/><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">maxmind</span><span class="hl-1"> = </span><span class="hl-3">require</span><span class="hl-1">(</span><span class="hl-4">&#39;maxmind&#39;</span><span class="hl-1">);</span><br/><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">fs</span><span class="hl-1"> = </span><span class="hl-3">require</span><span class="hl-1">(</span><span class="hl-4">&#39;fs&#39;</span><span class="hl-1">);</span><br/><br/><span class="hl-6">geolite2</span><span class="hl-1">.</span><span class="hl-3">downloadDbs</span><span class="hl-1">().</span><span class="hl-3">then</span><span class="hl-1">(() </span><span class="hl-0">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-0">let</span><span class="hl-1"> </span><span class="hl-6">lookup</span><span class="hl-1"> = </span><span class="hl-6">geolite2</span><span class="hl-1">.</span><span class="hl-3">open</span><span class="hl-1">(</span><span class="hl-4">&#39;GeoLite2-City&#39;</span><span class="hl-1">, </span><span class="hl-6">path</span><span class="hl-1"> </span><span class="hl-0">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">      </span><span class="hl-0">let</span><span class="hl-1"> </span><span class="hl-6">buf</span><span class="hl-1"> = </span><span class="hl-6">fs</span><span class="hl-1">.</span><span class="hl-3">readFileSync</span><span class="hl-1">(</span><span class="hl-6">path</span><span class="hl-1">);</span><br/><span class="hl-1">      </span><span class="hl-5">return</span><span class="hl-1"> </span><span class="hl-0">new</span><span class="hl-1"> </span><span class="hl-6">maxmind</span><span class="hl-1">.</span><span class="hl-3">Reader</span><span class="hl-1">(</span><span class="hl-6">buf</span><span class="hl-1">);</span><br/><span class="hl-1">    });</span><br/><br/><span class="hl-1">    </span><span class="hl-0">let</span><span class="hl-1"> </span><span class="hl-6">city</span><span class="hl-1"> = </span><span class="hl-6">lookup</span><span class="hl-1">.</span><span class="hl-3">get</span><span class="hl-1">(</span><span class="hl-4">&#39;66.6.44.4&#39;</span><span class="hl-1">);</span><br/><br/><span class="hl-1">    </span><span class="hl-6">lookup</span><span class="hl-1">.</span><span class="hl-3">close</span><span class="hl-1">();</span><br/><span class="hl-1">})</span>
+</code></pre>
+
+<a href="#advanced-usage" id="advanced-usage" style="color: inherit; text-decoration: none;">
+  <h3>Advanced usage</h3>
+</a>
+<p>If you do not consume the databases directly, or need more flexible methods, the internal <code>geolite2.UpdateSubscriber</code> class is exposed so you can directly listen to database update events. You can also choose where to download the databases.</p>
+<p>Example usage:</p>
+<pre><code class="language-javascript"><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">geolite2</span><span class="hl-1"> = </span><span class="hl-3">require</span><span class="hl-1">(</span><span class="hl-4">&#39;geolite2-redist&#39;</span><span class="hl-1">);</span><br/><br/><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">dbBasePath</span><span class="hl-1"> = </span><span class="hl-4">&#39;/tmp/maxmind&#39;</span><br/><br/><span class="hl-0">function</span><span class="hl-1"> </span><span class="hl-3">useGeolite</span><span class="hl-1">() {</span><br/><span class="hl-1">  </span><span class="hl-7">// Do something with the databases</span><br/><span class="hl-1">}</span><br/><br/><span class="hl-5">await</span><span class="hl-1"> </span><span class="hl-6">geolite2</span><span class="hl-1">.</span><span class="hl-3">downloadDbs</span><span class="hl-1">(</span><span class="hl-6">dbBasePath</span><span class="hl-1">)</span><br/><br/><span class="hl-0">const</span><span class="hl-1"> </span><span class="hl-2">dbWatcher</span><span class="hl-1"> = </span><span class="hl-0">new</span><span class="hl-1"> </span><span class="hl-6">geolite2</span><span class="hl-1">.</span><span class="hl-3">UpdateSubscriber</span><span class="hl-1">();</span><br/><span class="hl-6">dbWatcher</span><span class="hl-1">.</span><span class="hl-3">on</span><span class="hl-1">(</span><span class="hl-4">&#39;update&#39;</span><span class="hl-1">, () </span><span class="hl-0">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-3">useGeolite</span><span class="hl-1">();</span><br/><span class="hl-1">});</span><br/><br/><span class="hl-7">// Empty event loop when shutting down</span><br/><span class="hl-6">dbWatcher</span><span class="hl-1">.</span><span class="hl-3">close</span><span class="hl-1">();</span>
+</code></pre>
+
+<a href="#usage-with-typescript" id="usage-with-typescript" style="color: inherit; text-decoration: none;">
+  <h3>Usage with TypeScript</h3>
+</a>
+<p>This package includes its own types and you can pass the response type in <code>open</code>:</p>
+<pre><code class="language-ts"><span class="hl-5">import</span><span class="hl-1"> </span><span class="hl-6">geolite2</span><span class="hl-1"> </span><span class="hl-5">from</span><span class="hl-1"> </span><span class="hl-4">&#39;geolite2-redist&#39;</span><span class="hl-1">;</span><br/><span class="hl-5">import</span><span class="hl-1"> </span><span class="hl-6">maxmind</span><span class="hl-1">, { </span><span class="hl-6">CityResponse</span><span class="hl-1"> } </span><span class="hl-5">from</span><span class="hl-1"> </span><span class="hl-4">&#39;maxmind&#39;</span><span class="hl-1">;</span><br/><br/><span class="hl-1">(</span><span class="hl-0">async</span><span class="hl-1"> () </span><span class="hl-0">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">await</span><span class="hl-1"> </span><span class="hl-6">geolite2</span><span class="hl-1">.</span><span class="hl-3">downloadDbs</span><span class="hl-1">()</span><br/><span class="hl-1">  </span><span class="hl-0">let</span><span class="hl-1"> </span><span class="hl-6">lookup</span><span class="hl-1"> = </span><span class="hl-5">await</span><span class="hl-1"> </span><span class="hl-6">geolite2</span><span class="hl-1">.</span><span class="hl-3">open</span><span class="hl-1">&lt;</span><span class="hl-8">CityResponse</span><span class="hl-1">&gt;(</span><span class="hl-4">&#39;GeoLite2-City&#39;</span><span class="hl-1">, </span><span class="hl-6">path</span><span class="hl-1"> </span><span class="hl-0">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-5">return</span><span class="hl-1"> </span><span class="hl-6">maxmind</span><span class="hl-1">.</span><span class="hl-3">open</span><span class="hl-1">(</span><span class="hl-6">path</span><span class="hl-1">);</span><br/><span class="hl-1">  });</span><br/><br/><span class="hl-1">  </span><span class="hl-0">let</span><span class="hl-1"> </span><span class="hl-6">city</span><span class="hl-1"> = </span><span class="hl-6">lookup</span><span class="hl-1">.</span><span class="hl-3">get</span><span class="hl-1">(</span><span class="hl-4">&#39;66.6.44.4&#39;</span><span class="hl-1">);</span><br/><br/><span class="hl-1">  </span><span class="hl-7">// Call this when done to empty node&#39;s event loop</span><br/><span class="hl-1">  </span><span class="hl-6">lookup</span><span class="hl-1">.</span><span class="hl-3">close</span><span class="hl-1">();</span><br/><span class="hl-1">})();</span>
+</code></pre>
+
+<a href="#api" id="api" style="color: inherit; text-decoration: none;">
+  <h2>API</h2>
+</a>
+
+<a href="#methods" id="methods" style="color: inherit; text-decoration: none;">
+  <h3>Methods</h3>
+</a>
+<p><em>geolite2.downloadDbs(path?)</em></p>
+<p>This function returns a Promise that resolves when GeoIP databases have been succesfully retrieved from the redistribution.</p>
+<ul>
+<li><code>path</code>: <code>(optional) &lt;string&gt;</code> Filesystem path to use for storing databases. Can be relative, defaults to &#39;../dbs&#39;.</li>
+</ul>
+<p><em>geolite2.open(database, databaseReader)</em></p>
+<ul>
+<li><code>database</code>: <code>&lt;string&gt;</code> One of <code>GeoLite2-ASN</code>, <code>GeoLite2-Country</code>, <code>GeoLite2-City</code>.</li>
+<li><code>databaseReader</code>: <code>&lt;function&gt;</code> a function that will build a database reader object (<code>lookup</code>). Must return a <code>Promise</code> or an <code>&lt;object&gt;</code>. Called with two arguments:<ul>
+<li><code>path</code>: <code>&lt;string&gt;</code> The filesystem path to the database <code>.mmdb</code> file.</li>
+<li><code>update</code>: <code>&lt;boolean&gt;</code> Will be set to <code>true</code> if this is a rebuild following a database update. <code>false</code> on first run.</li>
+</ul>
+</li>
+</ul>
+
+<a href="#properties" id="properties" style="color: inherit; text-decoration: none;">
+  <h3>Properties</h3>
+</a>
+<p><em>geolite2.databases</em> <code>&lt;object&gt;</code></p>
+<p>See what databases you can use with <code>open()</code>. <strong>Warning:</strong> you need to let the library update the databases automatically, see Usage section.</p>
+<ul>
+<li><code>GeoLite2-ASN</code></li>
+<li><code>GeoLite2-Country</code></li>
+<li><code>GeoLite2-City</code></li>
+</ul>
+
+<a href="#classes" id="classes" style="color: inherit; text-decoration: none;">
+  <h3>Classes</h3>
+</a>
+<p><em>geolite2.UpdateSubscriber</em></p>
+<p>Internal class used to automatically update databases, exposed to allow advanced usage without the <code>geolite2.open()</code> method - see Usage.</p>
+<ul>
+<li><strong>Constructor</strong><ul>
+<li><em>new UpdateSubscriber()</em> Returns <code>EventEmitter</code> instance</li>
+</ul>
+</li>
+<li><strong>Events</strong><ul>
+<li><code>checking</code> Emitted when automatically checking for database updates.</li>
+<li><code>downloading</code> Emitted when an update has been found and the new databases are being downloaded in the background.</li>
+<li><code>update</code> Emitted when new databases have been written to the filesystem.</li>
+</ul>
+</li>
+<li><strong>Methods</strong><ul>
+<li><em>checkUpdates()</em> Checks for new database updates and downloads them.</li>
+<li><em>close()</em> Shuts down the updater.</li>
+</ul>
+</li>
+<li><strong>Props</strong><ul>
+<li><code>checking</code>: <code>&lt;boolean&gt;</code> Whether databases are being checked for updates in the background right now - see <code>checking</code> event.</li>
+<li><code>downloading</code>: <code>&lt;boolean&gt;</code> Whether databases are being downloaded in the background right now - see <code>downloading</code> event.</li>
+</ul>
+</li>
+</ul>
+
+<a href="#warning" id="warning" style="color: inherit; text-decoration: none;">
+  <h2>Warning</h2>
+</a>
+<p>Please carefully read the LICENSE and EULA files. This package comes with certain restrictions and obligations, most notably:</p>
+<ul>
+<li>You cannot prevent the library from updating the databases.</li>
+<li>You cannot use the GeoLite2 data:<ul>
+<li>for FCRA purposes,</li>
+<li>to identify specific households or individuals.</li>
+</ul>
+</li>
+</ul>
+<p><strong>The databases provided by MaxMind are licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></strong></p>
+<p>If you plan on using <code>node-geolite2</code> behind a firewall, you need to whitelist the <code>raw.githubusercontent.com</code> IP range for the database updates.</p>
+
+<a href="#compatibility" id="compatibility" style="color: inherit; text-decoration: none;">
+  <h2>Compatibility</h2>
+</a>
+<p>We follow Node&#39;s <a href="https://nodejs.org/en/about/releases/">deprecation schedule</a> and support all LTS versions that are either active or in maintenance mode.</p>
+
+<a href="#license" id="license" style="color: inherit; text-decoration: none;">
+  <h2>License</h2>
+</a>
+<p>See <a href="https://github.com/GitSquared/node-geolite2-redist/blob/master/LICENSE">LICENSE</a>.</p>
+<hr>
+<p><strong>This product includes GeoLite2 data created by MaxMind, available from <a href="https://www.maxmind.com">https://www.maxmind.com</a>.</strong></p>
+</div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Exports</a></li></ul></nav><nav class="tsd-navigation secondary menu-sticky"><ul><li class="tsd-kind-enum"><a href="enums/GeoIpDbName.html" class="tsd-kind-icon">Geo<wbr/>Ip<wbr/>Db<wbr/>Name</a></li><li class="tsd-kind-function"><a href="modules.html#downloadDbs" class="tsd-kind-icon">download<wbr/>Dbs</a></li><li class="tsd-kind-function tsd-has-type-parameter"><a href="modules.html#open" class="tsd-kind-icon">open</a></li></ul></nav></div></div></div><footer class="with-border-bottom"><div class="container"><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="container tsd-generator"><p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div><div class="overlay"></div><script src="assets/main.js"></script></body></html>
