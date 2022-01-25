@@ -74,9 +74,9 @@ export async function computeLocalChecksums<T extends GeoIpDbName>(dbList?: read
 	return buildObjectFromEntries(checksums)
 }
 
-export async function verifyChecksums(dbList: undefined, customStorageDir?: Path): Promise<void>
-export async function verifyChecksums<T extends GeoIpDbName>(dbList?: readonly T[], customStorageDir?: Path): Promise<void>
-export async function verifyChecksums<T extends GeoIpDbName>(dbList?: readonly T[], customStorageDir?: Path): Promise<void> {
+export async function verifyChecksums(dbList: undefined, customStorageDir?: Path): Promise<Record<GeoIpDbName, Path>>
+export async function verifyChecksums<T extends GeoIpDbName>(dbList?: readonly T[], customStorageDir?: Path): Promise<Record<T, Path>>
+export async function verifyChecksums<T extends GeoIpDbName>(dbList?: readonly T[], customStorageDir?: Path): Promise<Record<T, Path> | Record<GeoIpDbName, Path>> {
 	const [remote, local] = await Promise.all([
 		fetchChecksums(dbList),
 		computeLocalChecksums(dbList, customStorageDir)
@@ -87,6 +87,15 @@ export async function verifyChecksums<T extends GeoIpDbName>(dbList?: readonly T
 			throw new Error(`Checksum mismatch for ${db}`)
 		}
 	}
+
+	const dbListToMap = dbList ?? Object.values(GeoIpDbName)
+
+	return buildObjectFromEntries(
+		dbListToMap.map((dbName): [T | GeoIpDbName, Path] => [
+			dbName,
+			path.join(customStorageDir ?? defaultTargetDownloadDir, `${dbName}.mmdb`)
+		])
+	)
 }
 
 export async function downloadDatabases(dbList: undefined, customStorageDir?: Path): Promise<Record<GeoIpDbName, Path>>
@@ -100,6 +109,11 @@ export async function downloadDatabases<T extends GeoIpDbName>(dbList?: readonly
 	await cleanupHotDownloadDir(hotDownloadDir)
 	try {
 		fs.mkdirSync(targetDownloadDir)
+	} catch (e: any) {
+		if (e.code !== 'EEXIST') throw e
+	}
+
+	try {
 		fs.mkdirSync(hotDownloadDir)
 	} catch (e: any) {
 		if (e.code !== 'EEXIST') throw e
