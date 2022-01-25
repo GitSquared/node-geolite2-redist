@@ -5,6 +5,9 @@ redist/*.mmdb
 dbs/
 dbs-tmp/
 
+# Build outputs
+dist/
+
 # Logs
 logs
 *.log
