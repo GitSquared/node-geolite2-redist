@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "esnext",
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "importsNotUsedAsValues": "error",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": true,
+    "baseUrl": "./src"
+  }
+}

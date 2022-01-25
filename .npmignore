@@ -1,6 +1,9 @@
 # Database redistribution sources
 redist/
 
+# Documentation website
+docs/
+
 # CI scripts
 scripts/ci-cron
 scripts/clean-git-objects
@@ -11,6 +14,9 @@ scripts/update-databases
 # Downloaded databases
 dbs/
 dbs-tmp/
+
+# Build outputs
+dist/
 
 # Logs
 logs
