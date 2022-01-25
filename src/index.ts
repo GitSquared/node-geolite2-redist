@@ -1,10 +1,14 @@
-import { downloadDatabases } from "download-helpers"
+import { AutoUpdater } from "auto-updater"
+import { downloadDatabases, verifyChecksums } from "download-helpers"
+import { WrappedReader, wrapReader } from "reader-wrapper"
 
 export enum GeoIpDbName {
 	ASN = 'GeoLite2-ASN',
 	Country = 'GeoLite2-Country',
 	City = 'GeoLite2-City'
 }
+
+export type Path = string
 
 /**
 	Updates the local copy of the selected GeoLite databases, downloading new files if needed, or performing checksum validation of exiting ones.
@@ -18,10 +22,11 @@ export enum GeoIpDbName {
 	@returns A Promise that resolves when the databases have been successfully downloaded, and rejects otherwise.
 */
 export async function downloadDbs(options?: {
-	path: string;
+	path: Path;
 	dbList: GeoIpDbName[];
 }): Promise<void> {
-	await downloadDatabases(options?.dbList, options?.path)
+	await verifyChecksums(options?.dbList, options?.path)
+		.catch(() => downloadDatabases(options?.dbList, options?.path))
 }
 
 /**
@@ -35,10 +40,16 @@ export async function downloadDbs(options?: {
 
 	@param downloadDirPath - The path to the directory where the database should be stored. Defaults to `./node_modules/node-geolite2-redist/dbs`. See {@linkcode downloadDbs} for more information.
 
-	@returns A Promise that resolves when the databases have been successfully downloaded and your reader initialized, with a tuple containing the reader instance and a function to gracefully shutdown the database auto-updater.
+	@returns A Promise that resolves with your reader instance when the databases have been successfully downloaded and your reader initialized. Calling `.close()` on the reader will gracefully stop the background databases auto-updater, and run the reader's actual `close()` method if there is one, supporting arguments passthrough.
 */
-export async function open<DbReaderInstance extends Record<string, unknown>>(dbName: GeoIpDbName, readerInitializer: (path: string) => DbReaderInstance | Promise<DbReaderInstance>, downloadDirPath?: string): Promise<[reader: DbReaderInstance, close: () => void]> {
-	const reader = await readerInitializer(dbName)
+export async function open<DbReaderInstance extends Record<string, unknown>>(
+	dbName: GeoIpDbName,
+	readerInitializer: (path: Path) => DbReaderInstance | Promise<DbReaderInstance>,
+	downloadDirPath?: Path
+): Promise<WrappedReader<DbReaderInstance>> {
+	const autoUpdater = new AutoUpdater([dbName], downloadDirPath)
 
-	return [reader, () => {}]
+	const wrappedReader = await wrapReader(dbName, readerInitializer, autoUpdater)
+
+	return wrappedReader
 }
