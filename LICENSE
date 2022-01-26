@@ -7,7 +7,7 @@ conditions of this License.
 
 The Library redistributes copyrighted data (the "GeoLite2 Databases")
 that is property of MaxMind, Inc. ("MaxMind"), and which use is bound
-by the terms and conditions of the MaxMind's End User License Agreement
+by the terms and conditions of the MaxMind End User License Agreement
 (the "Agreement"). You should have received an archived copy of the
 Agreement with the Library (see EULA), but this License shall only
 refer to the latest revision which can be found at
@@ -19,5 +19,5 @@ Agreement. Your use of the Library must honor those terms.
 Additionally, (i) you may not redistribute the Library itself under
 different terms and conditions, (ii) you may not remove or obscure any
 copyright notice, (iii) you may not prevent the Library from updating
-local copies of the GeoLite2 Databases to honor Do Not Sell requests
-submitted to MaxMind.
+local copies of the GeoLite2 Databases in accordance with the Agreement's
+terms.
