@@ -34,9 +34,11 @@ export function wrapReader<DbReaderInstance extends Record<string, unknown>>(
 			const dbPath = paths[dbName]
 			reader = await readerInitializer(dbPath)
 
-			autoUpdater.on('updated', async (paths: Record<GeoIpDbName, Path>) => {
-				const dbPath = paths[dbName]
-				reader = await readerInitializer(dbPath)
+			setImmediate(() => {
+				autoUpdater.on('updated', async (paths: Record<GeoIpDbName, Path>) => {
+					const dbPath = paths[dbName]
+					reader = await readerInitializer(dbPath)
+				})
 			})
 			
 			resolve(proxy as WrappedReader<DbReaderInstance>)
