@@ -18,8 +18,16 @@ export async function downloadDbs(options?: {
 	path: Path;
 	dbList: GeoIpDbName[];
 }): Promise<void> {
-	await verifyChecksums(options?.dbList, options?.path)
-		.catch(() => downloadDatabases(options?.dbList, options?.path))
+	try {
+		await verifyChecksums(options?.dbList, options?.path)
+	} catch (err: any) {
+		if (
+			!err.message.startsWith('Checksum mismatch') &&
+			!(err.code === 'ENOENT')
+		) throw err
+
+		await downloadDatabases(options?.dbList, options?.path)
+	}
 }
 
 /**
