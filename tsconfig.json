@@ -1,15 +1,30 @@
 {
-  "compilerOptions": {
-    "module": "esnext",
-    "target": "esnext",
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node",
-    "importsNotUsedAsValues": "error",
-    "strict": true,
-    "skipLibCheck": true,
-    "noEmit": true,
-    "forceConsistentCasingInFileNames": true,
-    "useDefineForClassFields": true,
-    "baseUrl": "./src"
-  }
+	"compilerOptions": {
+		"outDir": "dist",
+
+		"module": "ES2020",
+		"target": "ES2019", // Node.js 12
+		"lib": [
+			"ES2019",
+		],
+		"moduleResolution": "node",
+		"allowSyntheticDefaultImports": true, // To provide backwards compatibility, Node.js allows you to import most CommonJS packages with a default import. This flag tells TypeScript that it's okay to use import on CommonJS modules.
+		"resolveJsonModule": false, // ESM doesn't yet support JSON modules.
+		"declaration": true,
+		"pretty": true,
+		"newLine": "lf",
+		"stripInternal": true,
+		"strict": true,
+		"noImplicitReturns": true,
+		"noImplicitOverride": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedIndexedAccess": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"noEmitOnError": true,
+		"useDefineForClassFields": true,
+		"forceConsistentCasingInFileNames": true,
+		"skipLibCheck": true
+	}
 }

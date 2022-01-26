@@ -1,14 +1,7 @@
-import { AutoUpdater } from "auto-updater"
-import { downloadDatabases, verifyChecksums } from "download-helpers"
-import { WrappedReader, wrapReader } from "reader-wrapper"
-
-export enum GeoIpDbName {
-	ASN = 'GeoLite2-ASN',
-	Country = 'GeoLite2-Country',
-	City = 'GeoLite2-City'
-}
-
-export type Path = string
+import { AutoUpdater } from './auto-updater.js'
+import { downloadDatabases, verifyChecksums } from './download-helpers.js'
+import { WrappedReader, wrapReader } from './reader-wrapper.js'
+import type { GeoIpDbName, Path } from './primitives.js'
 
 /**
 	Updates the local copy of the selected GeoLite databases, downloading new files if needed, or performing checksum validation of exiting ones.
