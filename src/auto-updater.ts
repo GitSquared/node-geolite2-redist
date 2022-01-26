@@ -49,8 +49,8 @@ export class AutoUpdater extends EventEmitter {
 			const paths = await verifyChecksums(this.dbList, this.customStorageDir)
 			this.emit('check-ok', paths)
 		} catch (err: any) {
-			if (!err.message.startsWith('Checksum mismatch')) throw err
 			if (secondRun) throw err
+			if (!err.message.startsWith('Checksum mismatch') && !(err.code === 'ENOENT')) throw err
 			this.update()
 		} finally {
 			this.checkingForUpdates = false
