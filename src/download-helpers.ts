@@ -1,20 +1,17 @@
 import { promisify } from 'node:util'
+import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import fs from 'node:fs'
 import stream from 'node:stream'
 import crypto from 'node:crypto'
 
 import rimraf from 'rimraf'
-import got from 'got'
 import tar from 'tar'
 
-import { buildObjectFromEntries } from './ts-helpers'
-import { GeoIpDbName } from './index'
+import { buildObjectFromEntries } from './ts-helpers.js'
+import { GeoIpDbName, Path, Checksum } from './primitives.js'
 
 const REDIST_MIRROR_URL = 'https://raw.githubusercontent.com/GitSquared/node-geolite2-redist/master/redist/'
-
-type Checksum = string; // sha384
-type Path = string; // absolute local filesystem path
 
 interface MirrorUrls {
 	checksum: Record<GeoIpDbName, string>;
@@ -32,9 +29,9 @@ const mirrorUrls: MirrorUrls = {
 			[dbName, `${REDIST_MIRROR_URL}${dbName}.tar.gz`]
 		)
 	)
-};
+}
 
-const defaultTargetDownloadDir = path.resolve(__dirname, '..', 'dbs')
+const defaultTargetDownloadDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'dbs')
 
 export async function cleanupHotDownloadDir(dirPath?: Path): Promise<void> {
 	rimraf(dirPath ?? defaultTargetDownloadDir+'.geodownload', { disableGlob: true }, (e) => {
@@ -50,7 +47,9 @@ export async function fetchChecksums<T extends GeoIpDbName>(dbList?: readonly T[
 	const checksums = await Promise.all(
 		dbListToFetch.map(async (dbName): Promise<[T | GeoIpDbName, string]> => [
 			dbName,
-			(await got(mirrorUrls.checksum[dbName]).text()).trim()
+			await import('got')
+				.then(({ got }) => got(mirrorUrls.checksum[dbName]).text())
+				.then(checksum => checksum.trim())
 		])
 	)
 
@@ -127,6 +126,8 @@ export async function downloadDatabases<T extends GeoIpDbName>(dbList?: readonly
 			await (async (): Promise<Path> => {
 				const hotDownloadPath: Path = path.join(hotDownloadDir, `${dbName}.mmdb`)
 				const coldCachePath: Path = path.join(targetDownloadDir, `${dbName}.mmdb`)
+
+				const { got } = await import('got')
 
 				await pipeline(
 					got.stream(mirrorUrls.download[dbName]),

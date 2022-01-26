@@ -5,19 +5,13 @@
   "description": "Redistribution of Maxmind's GeoLite2 Free Databases (without License Key)",
   "source": "src/index.ts",
   "exports": {
-    "require": "./dist/index.cjs",
-    "default": "./dist/index.modern.js"
+    "default": "./dist/index.js"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.module.js",
-  "unpkg": "./dist/index.umd.js",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "engines": {
     "node": ">= 12.0.0"
   },
-  "browserslist": [
-    "maintained node versions"
-  ],
   "keywords": [
     "maxmind",
     "mmdb",
@@ -29,9 +23,7 @@
   ],
   "scripts": {
     "prepare": "husky install",
-    "preload": "node scripts/preload-all.js",
-    "test": "npm run preload && mocha --check-leaks --bail --grep ${npm_config_grep:-''} --recursive --timeout 1s --inline-diffs test",
-    "build": "microbundle",
+    "build": "tsc",
     "make-docs": "typedoc"
   },
   "repository": {
@@ -57,8 +49,7 @@
     "@types/tar": "^6.1.1",
     "husky": "^7.0.4",
     "komit": "^1.0.5",
-    "maxmind": "^4.3.4",
-    "microbundle": "^0.14.2",
-    "typedoc": "^0.22.11"
+    "typedoc": "^0.22.11",
+    "typescript": "^4.5.5"
   }
 }
