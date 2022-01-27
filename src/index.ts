@@ -51,7 +51,7 @@ export async function downloadDbs(options?: {
 
 	@returns A Promise that resolves with your reader instance when the databases have been successfully downloaded and your reader initialized. Calling `.close()` on the reader will gracefully stop the background databases auto-updater, and run the reader's actual `close()` method if there is one, supporting arguments passthrough.
 */
-export async function open<DbReaderInstance extends Record<string, unknown>>(
+export async function open<DbReaderInstance extends {}>(
 	dbName: GeoIpDbName,
 	readerInitializer: (path: Path) => DbReaderInstance | Promise<DbReaderInstance>,
 	downloadDirPath?: Path
