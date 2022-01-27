@@ -1,6 +1,9 @@
 # Uncompressed MaxMind databases
 redist/*.mmdb
 
+# Built files
+dist/
+
 # Downloaded databases
 dbs/
 dbs.geodownload/
