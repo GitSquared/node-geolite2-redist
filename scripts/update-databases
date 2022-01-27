@@ -18,7 +18,7 @@ do
   echo -e "\nDownloading checksum for latest version of ${edition}..."
   curl -s "https://download.maxmind.com/app/geoip_download?edition_id=${edition}&license_key=${MAXMIND_LICENSE_KEY}&suffix=tar.gz.md5" -o ${edition}.tar.gz.remote.md5
 
-  if [ -f "$edition.tar.gz" ];
+  if [ -f "$edition.tar.gz.md5" ];
   then
 	 echo "Checking against current version..."
 	 remote=`cat ${edition}.tar.gz.remote.md5`
