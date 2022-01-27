@@ -3,7 +3,7 @@ import { downloadDatabases, verifyChecksums } from './download-helpers.js'
 import { WrappedReader, wrapReader } from './reader-wrapper.js'
 import { GeoIpDbName, Path } from './primitives.js'
 
-export { GeoIpDbName };
+export { GeoIpDbName, WrappedReader };
 
 /**
 	Updates the local copy of the selected GeoLite databases, downloading new files if needed, or performing checksum validation of exiting ones.

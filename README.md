@@ -85,7 +85,7 @@ You can add this to your `package.json` to preload the databases after running `
 
 ## API
 
-You can find a more detailed documentation [on the Typedoc-generated website](https://gitsquared.github.io/node-geolite2-redist/).
+You can find a more detailed documentation [on the Typedoc-generated website](https://gitsquared.github.io/node-geolite2-redist/modules.html).
 
 ## Legal Warning
 
