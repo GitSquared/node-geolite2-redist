@@ -1,15 +1,9 @@
 import { AutoUpdater } from './auto-updater.js'
 import { downloadDatabases, verifyChecksums } from './download-helpers.js'
 import { WrappedReader, wrapReader } from './reader-wrapper.js'
+import { GeoIpDbName, Path } from './primitives.js'
 
-export enum GeoIpDbName { // Supported MaxMind databases
-	ASN = 'GeoLite2-ASN',
-	Country = 'GeoLite2-Country',
-	City = 'GeoLite2-City'
-}
-
-export type Checksum = string; // sha384
-export type Path = string; // absolute local filesystem path
+export { GeoIpDbName };
 
 /**
 	Updates the local copy of the selected GeoLite databases, downloading new files if needed, or performing checksum validation of exiting ones.

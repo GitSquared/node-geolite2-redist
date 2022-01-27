@@ -1,5 +1,5 @@
 import type { AutoUpdater } from './auto-updater.js'
-import type { GeoIpDbName, Path } from './index.js'
+import type { GeoIpDbName, Path } from './primitives.js'
 
 export type WrappedReader<Reader extends Record<string, unknown>> = Reader & {
 	close: Reader['close'] extends (...args: unknown[]) => unknown ? Reader['close'] : () => void
