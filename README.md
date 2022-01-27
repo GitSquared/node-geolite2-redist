@@ -21,9 +21,15 @@ See [Legal Warning](#legal-warning) section for more info on licensing and limit
 
 ## Usage
 
+### Installing
+
+`npm install geolite2-redist`
+
 ### Using the geoip data
 
 Example geoip lookup in a Node environment, using the `GeoLite2-City` database with `node-maxmind` as a db reader:
+
+#### Javascript
 
 ```javascript
 const maxmind = require('maxmind');
@@ -38,14 +44,44 @@ import('geolite2-redist').then((geolite2) => {
 }).then((reader) => {
   const lookup = reader.get('185.194.81.29')
 
-  console.log(lookup.country.iso_code) // FR 🥖🇫
+  console.log(lookup.country.iso_code) // FR 🥖🇫🇷
 
   // Calling close() here shuts everything down nicely and clears up Node's event loop.
   reader.close()
 })
 ```
 
-TODO: Typescript example
+#### Typescript
+
+```typescript
+import geolite2, { GeoIpDbName } from 'geolite2-redist';
+import maxmind, { CountryResponse } from 'maxmind';
+
+(async () => {
+  const reader = await geolite2.open(
+    GeoIpDbName.Country, // Use the enum instead of a string!
+    (path) => maxmind.open<CountryResponse>(path)
+  )
+
+  const lookup = reader.get('185.194.81.29')
+
+  console.log(lookup.country.iso_code) // FR 🥖🇫🇷
+
+  reader.close()
+})();
+```
+
+### Preloading databases
+
+You can add this to your `package.json` to preload the databases after running `npm install`, instead of downloading them the first time `open` is called:
+
+```json
+{
+  "scripts": {
+    "preload": "node -e \"import('geolite2-redist').then(geolite => geolite.downloadDbs())\""
+  }
+}
+```
 
 ## API
 
