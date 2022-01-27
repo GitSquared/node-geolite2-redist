@@ -23,7 +23,7 @@ export class AutoUpdater extends EventEmitter {
 		super();
 
 		if (dbList) this.dbList = dbList
-		if (this.customStorageDir) this.customStorageDir = customStorageDir
+		if (customStorageDir) this.customStorageDir = customStorageDir
 
 		cleanupHotDownloadDir();
 
