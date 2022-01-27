@@ -15,4 +15,3 @@ jobs:
         env:
           GITHUB_PUSH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MAXMIND_LICENSE_KEY: ${{ secrets.MAXMIND_LICENSE_KEY }}
-          FILTER_BRANCH_SQUELCH_WARNING: 1

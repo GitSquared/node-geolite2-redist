@@ -8,7 +8,14 @@ then
 fi
 
 echo "Installing filter-repo"...
-sudo apt install git-filter-repo
+# Disabled as git-filter-repo is not yet available on ubuntu 20.04 LTS repos
+# sudo apt-get update
+# sudo apt-get install git-filter-repo
+git config --global advice.detachedHead false
+git clone --depth 1 --branch v2.34.0 https://github.com/newren/git-filter-repo.git
+cd git-filter-repo
+sudo cp -a git-filter-repo $(git --exec-path)
+cd ..
 
 echo "Cloning a clean state..."
 git clone "https://github.com/${GITHUB_REPOSITORY}.git" clone
@@ -17,7 +24,7 @@ cd clone
 
 echo "Rewriting git history, cleaning up refs to previous databases..."
 
-./scripts/clean-git-objects > /dev/null
+./scripts/clean-git-objects
 stat=$?
 if [ $stat -ne 0 ]
 then
@@ -58,12 +65,14 @@ du -sh .git
 
 echo "Pushing..."
 
-git push --all --force "https://username:${GITHUB_PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" master
+git remote add origin "https://username:${GITHUB_PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+git push origin --all --force
 stat=$?
 if [ $stat -ne 0 ]; then
 	exit 1
 fi
-git push --force --tags "https://username:${GITHUB_PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+git push origin --tags --force
 stat=$?
 if [ $stat -ne 0 ]; then
 	exit 1

@@ -11,6 +11,8 @@ editions=(GeoLite2-ASN GeoLite2-Country GeoLite2-City)
 
 cd redist
 
+did_update_anything=0
+
 for edition in ${editions[*]}
 do
   echo -e "\nDownloading checksum for latest version of ${edition}..."
@@ -25,7 +27,7 @@ do
 	 then
 		echo -e "\033[32;1m${edition} is already up to date\033[0m"
 		rm ${edition}.tar.gz.md5
-		exit 65
+		continue
 	 else
 		echo "Update available!"
 	 fi
@@ -43,6 +45,7 @@ do
 	 exit 1
   else
 	 rm ${edition}.tar.gz.md5
+	 did_update_anything=1
   fi
 
   echo "Extracting database..."
@@ -56,4 +59,10 @@ do
 done
 
 echo -e "\n\033[1mAll databases processed\033[0m"
-exit 0
+
+if [ $did_update_anything -eq 1 ];
+then
+	exit 0
+else
+	exit 65
+fi
