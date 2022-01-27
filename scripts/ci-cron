@@ -7,12 +7,15 @@ then
 	exit 1
 fi
 
+echo "Installing filter-repo"...
+sudo apt install git-filter-repo
+
 echo "Cloning a clean state..."
 git clone "https://github.com/${GITHUB_REPOSITORY}.git" clone
 
 cd clone
 
-echo "Cleaning previous databases from git objects..."
+echo "Rewriting git history, cleaning up refs to previous databases..."
 
 ./scripts/clean-git-objects > /dev/null
 stat=$?
@@ -21,6 +24,8 @@ then
 	echo "Exited with ${stat}"
 	exit 1
 fi
+
+echo "Updating redistribution..."
 
 ./scripts/update-databases
 
@@ -37,15 +42,28 @@ then
 	exit 1
 fi
 
+echo "Committing..."
+
 git add redist
-git config user.name "GitHub Actions Robot"
+git config user.name "DBs Redist Updater"
 git config user.email "bot@example.com"
 git commit -m "chore(redist): update databases - cron job GH-${GITHUB_RUN_NUMBER}" -m "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" --no-verify
 stat=$?
 if [ $stat -ne 0 ]; then
 	exit 1
 fi
-git push --force "https://username:${GITHUB_PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" master
+
+echo "New repo size:"
+du -sh .git
+
+echo "Pushing..."
+
+git push --all --force "https://username:${GITHUB_PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" master
+stat=$?
+if [ $stat -ne 0 ]; then
+	exit 1
+fi
+git push --force --tags "https://username:${GITHUB_PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 stat=$?
 if [ $stat -ne 0 ]; then
 	exit 1
