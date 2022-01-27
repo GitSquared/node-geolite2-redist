@@ -104,6 +104,10 @@ If you plan on using `node-geolite2` behind a firewall, you need to whitelist th
 
 We follow the OpenJS Foundation's [deprecation schedule](https://nodejs.org/en/about/releases/) and support all maintained Node versions.
 
+## Alternatives
+
+If you do have a MaxMind license key (which you can get by signing up [here](https://www.maxmind.com/en/geolite2/signup)), you might prefer using [`node-geolite2`](https://github.com/runk/node-geolite2), which this repository is originally a fork of.
+
 ## License
 
 The databases themselves are provided by MaxMind under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
