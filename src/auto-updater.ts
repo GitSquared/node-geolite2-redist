@@ -1,7 +1,7 @@
 import { EventEmitter } from 'node:events'
 
 import { cleanupHotDownloadDir, downloadDatabases, verifyChecksums } from './download-helpers.js'
-import { GeoIpDbName, Path } from './index.js'
+import { GeoIpDbName, Path } from './primitives.js'
 
 const updateTimer = 2 * 24 * 60 * 60 * 1000 // 48 hours in ms
 
