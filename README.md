@@ -1,6 +1,6 @@
 # node-geolite2-redist
 
-[![Automatic Redistribution Updates](https://github.com/GitSquared/node-geolite2-redist/workflows/Databases%20Updater/badge.svg?branch=master&event=schedule)](https://github.com/GitSquared/node-geolite2-redist/actions?query=workflow%3A%22Databases+Updater%22) [![NPM published version](https://badgen.net/npm/v/geolite2-redist)](https://www.npmjs.com/package/geolite2-redist) [![Node version](https://badgen.net/npm/node/geolite2-redist)](https://nodejs.org/en/about/releases/) ![[Types Status](https://badgen.net/npm/types/geolite2-redist)](#typescript)
+[![Automatic Redistribution Updates](https://github.com/GitSquared/node-geolite2-redist/workflows/Databases%20Updater/badge.svg?branch=master&event=schedule)](https://github.com/GitSquared/node-geolite2-redist/actions?query=workflow%3A%22Databases+Updater%22) [![NPM published version](https://badgen.net/npm/v/geolite2-redist)](https://www.npmjs.com/package/geolite2-redist) [![Node version](https://badgen.net/npm/node/geolite2-redist)](https://nodejs.org/en/about/releases/) [![Types Status](https://badgen.net/npm/types/geolite2-redist)](#typescript)
 
 ---
 
