@@ -22,16 +22,6 @@ git clone "https://github.com/${GITHUB_REPOSITORY}.git" clone
 cd clone
 git switch -C "${GITHUB_REF_NAME}"
 
-echo "Rewriting git history, cleaning up refs to previous databases..."
-
-./scripts/clean-git-objects
-stat=$?
-if [ $stat -ne 0 ]
-then
-	echo "Exited with ${stat}"
-	exit 1
-fi
-
 echo "Updating redistribution..."
 
 ./scripts/update-databases

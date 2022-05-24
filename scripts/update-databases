@@ -35,6 +35,15 @@ do
 	 fi
   fi
 
+	echo "Cleaning previous version from git history..."
+	../scripts/clean-git-objects ${edition}
+	stat=$?
+	if [ $stat -ne 0 ]
+	then
+		echo "Git objects cleaning failed with ${stat} exit code"
+		exit 1
+	fi
+
   echo "Downloading ${edition}..."
   curl -s "https://download.maxmind.com/app/geoip_download?edition_id=${edition}&license_key=${MAXMIND_LICENSE_KEY}&suffix=tar.gz" -o ${edition}.tar.gz
 

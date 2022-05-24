@@ -1,12 +1,20 @@
 #!/bin/bash
 
+database_name=$1
+
+echo "Cleaning git objects for database ${database_name}..."
+echo "=========="
+
 echo "Before:"
 du -sh .git
 
-git filter-repo --invert-paths --path-glob "redist/*.tar.gz" --force
+git filter-repo --invert-paths --path-glob "redist/${database_name}.tar.gz" --force
 git for-each-ref --format="delete %(refname)" refs/original | git update-ref --stdin
 git reflog expire --expire=now --all
 git gc --prune=now
 
 echo "After:"
 du -sh .git
+
+echo "=========="
+echo "Done cleaning git objects"
