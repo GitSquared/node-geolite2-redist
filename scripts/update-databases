@@ -23,6 +23,8 @@ do
 	 echo "Checking against current version..."
 	 remote=`cat ${edition}.tar.gz.remote.md5`
 	 local=`cat ${edition}.tar.gz.md5`
+	 echo "Remote: ${remote}"
+	 echo "Local: ${local}"
 	 if [ "$remote" == "$local" ];
 	 then
 		echo -e "\033[32;1m${edition} is already up to date\033[0m"
@@ -39,6 +41,8 @@ do
   echo "Verifying checksum..."
   remote=`cat ${edition}.tar.gz.remote.md5`
   local=`md5sum ${edition}.tar.gz | awk '{print $1;}'`
+	echo "Remote: ${remote}"
+	echo "Local: ${local}"
   if [ "$remote" != "$local" ];
   then
 	 echo -e "\033[31;1mChecksums didn't match: failed download for ${edition}\033[0m"
@@ -54,6 +58,7 @@ do
 
   echo "Calculating database checksum for redistribution..."
   calculated=`sha384sum ${edition}.mmdb | awk '{print $1;}'`
+	echo "New checksum: ${calculated}"
   echo "${calculated}" > ${edition}.mmdb.sha384
 
   echo -e "\033[32;1mDatabase ${edition} successfully updated\033[0m"
