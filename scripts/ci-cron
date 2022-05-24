@@ -19,8 +19,8 @@ cd ..
 
 echo "Cloning a clean state..."
 git clone "https://github.com/${GITHUB_REPOSITORY}.git" clone
-
 cd clone
+git switch -C "${GITHUB_REF_NAME}"
 
 echo "Rewriting git history, cleaning up refs to previous databases..."
 
