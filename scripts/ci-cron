@@ -39,17 +39,6 @@ then
 	exit 1
 fi
 
-echo "Committing..."
-
-git add redist
-git config user.name "DBs Redist Updater"
-git config user.email "bot@example.com"
-git commit -m "chore(redist): update databases - cron job GH-${GITHUB_RUN_NUMBER}" -m "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" --no-verify
-stat=$?
-if [ $stat -ne 0 ]; then
-	exit 1
-fi
-
 echo "New repo size:"
 du -sh .git
 

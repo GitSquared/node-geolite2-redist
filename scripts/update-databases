@@ -72,6 +72,17 @@ do
 	echo "New checksum: ${calculated}"
   echo "${calculated}" > ${edition}.mmdb.sha384
 
+	echo "Committing update..."
+	cd ..
+	./scripts/commit-database ${edition}
+	stat=$?
+	if [ $stat -ne 0 ]
+	then
+		echo "Committing failed with ${stat} exit code"
+		exit 1
+	fi
+	cd redist
+
   echo -e "\033[32;1mDatabase ${edition} successfully updated\033[0m"
 done
 
