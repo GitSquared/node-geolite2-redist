@@ -2,7 +2,7 @@ name: Databases Updater
 
 on:
   schedule:
-    - cron: '0 0 * * 0/2'
+    - cron: '0 1 27 * *'
   workflow_dispatch:
 
 jobs:
