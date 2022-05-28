@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: '0 1 27 * *'
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run: do not push updates to repo'
+        required: true
+        default: true
+        type: boolean
 
 jobs:
   update_dbs:
@@ -15,3 +21,4 @@ jobs:
         env:
           GITHUB_PUSH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MAXMIND_LICENSE_KEY: ${{ secrets.MAXMIND_LICENSE_KEY }}
+          DRY_RUN: ${{ inputs.dry_run }}

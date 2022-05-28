@@ -53,6 +53,12 @@ fi
 echo "New repo size:"
 du -sh .git
 
+if [ ${DRY_RUN} == "true" ];
+then
+	echo "Dry run, exiting..."
+	exit 0
+fi
+
 echo "Pushing..."
 
 git remote add origin "https://username:${GITHUB_PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
