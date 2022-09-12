@@ -13,6 +13,8 @@ import { GeoIpDbName, Path, Checksum } from './primitives.js'
 
 const REDIST_MIRROR_URL = 'https://raw.githubusercontent.com/GitSquared/node-geolite2-redist/master/redist/'
 
+const pRimraf = promisify(rimraf)
+
 interface MirrorUrls {
 	checksum: Record<GeoIpDbName, string>;
 	download: Record<GeoIpDbName, string>;
@@ -34,9 +36,7 @@ const mirrorUrls: MirrorUrls = {
 const defaultTargetDownloadDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'dbs')
 
 export async function cleanupHotDownloadDir(dirPath?: Path): Promise<void> {
-	rimraf(dirPath ?? defaultTargetDownloadDir+'.geodownload', { disableGlob: true }, (e) => {
-		if (e) throw(e)
-	})
+	return pRimraf(dirPath ?? defaultTargetDownloadDir+'.geodownload', { disableGlob: true })
 }
 
 export async function fetchChecksums(dbList: undefined): Promise<Record<GeoIpDbName, Checksum>>
