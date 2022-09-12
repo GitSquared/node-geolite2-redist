@@ -8,7 +8,7 @@ on:
       dry_run:
         description: 'Dry run: do not push updates to repo'
         required: true
-        default: false
+        default: true
         type: boolean
 
 jobs:

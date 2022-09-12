@@ -42,26 +42,26 @@ fi
 echo "New repo size:"
 du -sh .git
 
-if [ "${DRY_RUN}" == "false" ];
+if [ "${DRY_RUN}" == "true" ];
 then
-	echo "Pushing..."
-
-	git remote add origin "https://username:${GITHUB_PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-
-	git push origin --all --force
-	stat=$?
-	if [ $stat -ne 0 ]; then
-		exit 1
-	fi
-	git push origin --tags --force
-	stat=$?
-	if [ $stat -ne 0 ]; then
-		exit 1
-	else
-		echo "Updates pushed to GitHub remote"
-		exit 0
-	fi
-else
 	echo "Dry run, exiting..."
+	exit 0
+fi
+
+echo "Pushing..."
+
+git remote add origin "https://username:${GITHUB_PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+git push origin --all --force
+stat=$?
+if [ $stat -ne 0 ]; then
+	exit 1
+fi
+git push origin --tags --force
+stat=$?
+if [ $stat -ne 0 ]; then
+	exit 1
+else
+	echo "Updates pushed to GitHub remote"
 	exit 0
 fi
