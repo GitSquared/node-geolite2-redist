@@ -13,7 +13,7 @@ import { GeoIpDbName, Path, Checksum } from './primitives.js'
 
 const REDIST_MIRROR_URL = 'https://raw.githubusercontent.com/GitSquared/node-geolite2-redist/master/redist/'
 
-const pRimraf = promisify(rimraf)
+const pRimraf = promisify<string, rimraf.Options>(rimraf)
 
 interface MirrorUrls {
 	checksum: Record<GeoIpDbName, string>;
