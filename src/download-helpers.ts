@@ -34,7 +34,7 @@ const mirrorUrls: MirrorUrls = {
 const defaultTargetDownloadDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'dbs')
 
 export async function cleanupHotDownloadDir(dirPath?: Path): Promise<boolean> {
-	return rimraf(dirPath ?? defaultTargetDownloadDir+'.geodownload', { glob: false })
+	return rimraf(dirPath ?? defaultTargetDownloadDir+'-tmp', { glob: false })
 }
 
 export async function fetchChecksums(dbList: undefined): Promise<Record<GeoIpDbName, Checksum>>
@@ -101,7 +101,7 @@ export async function downloadDatabases<T extends GeoIpDbName>(dbList?: readonly
 	const dbListToFetch = dbList ?? Object.values(GeoIpDbName)
 	const targetDownloadDir = customStorageDir ?? defaultTargetDownloadDir
 
-	const hotDownloadDir = targetDownloadDir + '.geodownload'
+	const hotDownloadDir = targetDownloadDir + '-tmp'
 
 	await cleanupHotDownloadDir(hotDownloadDir)
 	try {
