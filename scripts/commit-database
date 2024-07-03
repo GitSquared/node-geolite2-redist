@@ -5,7 +5,7 @@ database_name=$1
 echo "Writing commit for database ${database_name}..."
 echo "=========="
 
-git add redist/${database_name}.tar.gz redist/${database_name}.tar.gz.md5 redist/${database_name}.mmdb.sha384
+git add redist/${database_name}.tar.gz redist/${database_name}.tar.gz.sha256 redist/${database_name}.mmdb.sha384
 git status
 git diff --staged
 
