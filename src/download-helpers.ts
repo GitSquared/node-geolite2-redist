@@ -103,17 +103,14 @@ export async function downloadDatabases<T extends GeoIpDbName>(dbList?: readonly
 
 	const hotDownloadDir = targetDownloadDir + '-tmp'
 
-	await cleanupHotDownloadDir(hotDownloadDir)
-	try {
-		fs.mkdirSync(targetDownloadDir)
-	} catch (e: any) {
-		if (e.code !== 'EEXIST') throw e
+	if (fs.existsSync(hotDownloadDir)) {
+		await cleanupHotDownloadDir(hotDownloadDir)
 	}
 
-	try {
-		fs.mkdirSync(hotDownloadDir)
-	} catch (e: any) {
-		if (e.code !== 'EEXIST') throw e
+	fs.mkdirSync(hotDownloadDir)
+
+	if (!fs.existsSync(targetDownloadDir)) {
+		fs.mkdirSync(targetDownloadDir)
 	}
 
 	const pipeline = promisify(stream.pipeline)
