@@ -17,7 +17,7 @@ export class AutoUpdater extends EventEmitter {
 	checkingForUpdates: boolean = false
 	downloading: boolean = false
 
-	#checker: NodeJS.Timer
+	#checker: NodeJS.Timeout
 
 	constructor(dbList?: GeoIpDbName[], customStorageDir?: Path) {
 		super();

@@ -5,15 +5,13 @@ import fs from 'node:fs'
 import stream from 'node:stream'
 import crypto from 'node:crypto'
 
-import rimraf from 'rimraf'
-import tar from 'tar'
+import { rimraf } from 'rimraf'
+import * as tar from 'tar'
 
 import { buildObjectFromEntries } from './ts-helpers.js'
 import { GeoIpDbName, Path, Checksum } from './primitives.js'
 
 const REDIST_MIRROR_URL = 'https://raw.githubusercontent.com/GitSquared/node-geolite2-redist/master/redist/'
-
-const pRimraf = promisify<string, rimraf.Options>(rimraf)
 
 interface MirrorUrls {
 	checksum: Record<GeoIpDbName, string>;
@@ -35,8 +33,8 @@ const mirrorUrls: MirrorUrls = {
 
 const defaultTargetDownloadDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'dbs')
 
-export async function cleanupHotDownloadDir(dirPath?: Path): Promise<void> {
-	return pRimraf(dirPath ?? defaultTargetDownloadDir+'.geodownload', { disableGlob: true })
+export async function cleanupHotDownloadDir(dirPath?: Path): Promise<boolean> {
+	return rimraf(dirPath ?? defaultTargetDownloadDir+'.geodownload', { glob: false })
 }
 
 export async function fetchChecksums(dbList: undefined): Promise<Record<GeoIpDbName, Checksum>>
