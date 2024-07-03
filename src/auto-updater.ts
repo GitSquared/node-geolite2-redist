@@ -66,7 +66,8 @@ export class AutoUpdater extends EventEmitter {
 			await this.checkForUpdates(true)
 			this.emit('updated', paths)
 		} catch (err) {
-			throw err
+			console.error(err)
+			console.warn('Warning: allowing the GeoLite databases to self-update is mandatory to comply with license requirements.')
 		} finally {
 			cleanupHotDownloadDir()
 			this.downloading = false

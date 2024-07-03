@@ -133,7 +133,11 @@ export async function downloadDatabases<T extends GeoIpDbName>(dbList?: readonly
 					})
 				)
 
-				fs.renameSync(hotDownloadPath, coldCachePath)
+				try {
+					fs.renameSync(hotDownloadPath, coldCachePath)
+				} catch (err) {
+					throw new Error(`Failed to replace ${dbName} with updated version: ${err}`)
+				}
 
 				return coldCachePath
 			})()
