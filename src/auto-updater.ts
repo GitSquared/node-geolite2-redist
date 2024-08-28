@@ -25,7 +25,7 @@ export class AutoUpdater extends EventEmitter {
 		if (dbList) this.dbList = dbList
 		if (customStorageDir) this.customStorageDir = customStorageDir
 
-		cleanupHotDownloadDir();
+		cleanupHotDownloadDir(this.customStorageDir);
 
 		this.#checker = setInterval(
 			this.checkForUpdates.bind(this),
@@ -69,7 +69,7 @@ export class AutoUpdater extends EventEmitter {
 			console.error(err)
 			console.warn('Warning: allowing the GeoLite databases to self-update is mandatory to comply with license requirements.')
 		} finally {
-			cleanupHotDownloadDir()
+			cleanupHotDownloadDir(this.customStorageDir)
 			this.downloading = false
 		}
 	}
