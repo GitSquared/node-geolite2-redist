@@ -45,7 +45,7 @@
   "homepage": "https://github.com/GitSquared/node-geolite2-redist#readme",
   "dependencies": {
     "got": "^14.4.1",
-    "rimraf": "^5.0.7",
+    "rimraf": "^6.1.0",
     "tar": "^7.4.0"
   },
   "devDependencies": {
