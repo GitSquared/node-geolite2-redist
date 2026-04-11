@@ -33,8 +33,26 @@ const mirrorUrls: MirrorUrls = {
 
 const defaultTargetDownloadDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'dbs')
 
-export async function cleanupHotDownloadDir(dirPath?: Path): Promise<boolean> {
-	return rimraf(dirPath ?? defaultTargetDownloadDir+'-tmp', { glob: false })
+export async function cleanupHotDownloadDir(dirPath?: Path): Promise<void> {
+	if (dirPath) {
+		await rimraf(dirPath, { glob: false })
+		return
+	}
+
+	// Clean up any stale temp dirs left over from crashed downloads
+	const parentDir = path.dirname(defaultTargetDownloadDir)
+	const prefix = path.basename(defaultTargetDownloadDir) + '-tmp-'
+	let entries: fs.Dirent[]
+	try {
+		entries = fs.readdirSync(parentDir, { withFileTypes: true })
+	} catch {
+		return
+	}
+	for (const entry of entries) {
+		if (entry.isDirectory() && entry.name.startsWith(prefix)) {
+			await rimraf(path.join(parentDir, entry.name), { glob: false })
+		}
+	}
 }
 
 export async function fetchChecksums(dbList: undefined): Promise<Record<GeoIpDbName, Checksum>>
@@ -101,50 +119,51 @@ export async function downloadDatabases<T extends GeoIpDbName>(dbList?: readonly
 	const dbListToFetch = dbList ?? Object.values(GeoIpDbName)
 	const targetDownloadDir = customStorageDir ?? defaultTargetDownloadDir
 
-	const hotDownloadDir = targetDownloadDir + '-tmp'
-
-	if (fs.existsSync(hotDownloadDir)) {
-		await cleanupHotDownloadDir(hotDownloadDir)
-	}
-
-	fs.mkdirSync(hotDownloadDir)
+	// Use a unique temp dir per download to avoid races between concurrent
+	// processes (e.g. cluster workers) sharing the same node_modules.
+	const hotDownloadDir = fs.mkdtempSync(targetDownloadDir + '-tmp-')
 
 	if (!fs.existsSync(targetDownloadDir)) {
-		fs.mkdirSync(targetDownloadDir)
+		fs.mkdirSync(targetDownloadDir, { recursive: true })
 	}
 
 	const pipeline = promisify(stream.pipeline)
 
-	const downloadedPaths = await Promise.all(
-		dbListToFetch.map(async (dbName): Promise<[T | GeoIpDbName, string]> => [
-			dbName,
-			await (async (): Promise<Path> => {
-				const hotDownloadPath: Path = path.join(hotDownloadDir, `${dbName}.mmdb`)
-				const coldCachePath: Path = path.join(targetDownloadDir, `${dbName}.mmdb`)
+	try {
+		const downloadedPaths = await Promise.all(
+			dbListToFetch.map(async (dbName): Promise<[T | GeoIpDbName, string]> => [
+				dbName,
+				await (async (): Promise<Path> => {
+					const hotDownloadPath: Path = path.join(hotDownloadDir, `${dbName}.mmdb`)
+					const coldCachePath: Path = path.join(targetDownloadDir, `${dbName}.mmdb`)
 
-				const { got } = await import('got')
+					const { got } = await import('got')
 
-				await pipeline(
-					got.stream(mirrorUrls.download[dbName]),
-					tar.x({
-						cwd: hotDownloadDir,
-						filter: (entryPath: Path): boolean => path.basename(entryPath) === `${dbName}.mmdb`,
-						strip: 1
-					})
-				)
+					await pipeline(
+						got.stream(mirrorUrls.download[dbName]),
+						tar.x({
+							cwd: hotDownloadDir,
+							filter: (entryPath: Path): boolean => path.basename(entryPath) === `${dbName}.mmdb`,
+							strip: 1
+						})
+					)
 
-				try {
+					if (!fs.existsSync(hotDownloadPath)) {
+						throw new Error(
+							`Download of ${dbName} failed: database file missing after extraction. `
+							+ 'This can happen when the mirror is rate-limited or the download was interrupted.'
+						)
+					}
+
 					fs.renameSync(hotDownloadPath, coldCachePath)
-				} catch (err) {
-					throw new Error(`Failed to replace ${dbName} with updated version: ${err}`)
-				}
 
-				return coldCachePath
-			})()
-		])
-	)
+					return coldCachePath
+				})()
+			])
+		)
 
-	await cleanupHotDownloadDir(hotDownloadDir)
-
-	return buildObjectFromEntries(downloadedPaths)
+		return buildObjectFromEntries(downloadedPaths)
+	} finally {
+		await cleanupHotDownloadDir(hotDownloadDir)
+	}
 }
