@@ -56,7 +56,7 @@
     "@types/tar": "^6.1.13",
     "husky": "^9.0.11",
     "komit": "^1.0.5",
-    "typedoc": "^0.26.3",
+    "typedoc": "^0.28.19",
     "typescript": "^5.5.3"
   }
 }
