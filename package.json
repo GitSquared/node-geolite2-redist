@@ -43,14 +43,18 @@
     "url": "https://github.com/GitSquared/node-geolite2-redist/issues"
   },
   "homepage": "https://github.com/GitSquared/node-geolite2-redist#readme",
+  "overrides": {
+    "ajv@^8.0.0": "8.20.0",
+    "js-yaml@^4.0.0": "4.3.0"
+  },
   "dependencies": {
     "got": "^14.4.1",
     "rimraf": "^6.1.0",
     "tar": "^7.4.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.3.0",
-    "@commitlint/config-conventional": "^19.2.2",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@types/node": "^20.14.9",
     "@types/rimraf": "^3.0.2",
     "@types/tar": "^6.1.13",
