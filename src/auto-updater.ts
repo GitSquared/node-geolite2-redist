@@ -18,6 +18,14 @@ export class AutoUpdater extends EventEmitter {
 	downloading: boolean = false
 
 	#checker: NodeJS.Timeout
+	#runCheck = (): void => {
+		void this.checkForUpdates().catch((error: unknown) => {
+			const handled = this.emit('check-error', error)
+			if (!handled) {
+				console.warn('GeoLite update check failed; keeping the existing database reader.', error)
+			}
+		})
+	}
 
 	constructor(dbList?: GeoIpDbName[], customStorageDir?: Path) {
 		super();
@@ -28,13 +36,13 @@ export class AutoUpdater extends EventEmitter {
 		cleanupHotDownloadDir();
 
 		this.#checker = setInterval(
-			this.checkForUpdates.bind(this),
+			this.#runCheck,
 			updateTimer
 		)
 
 		// Schedule first update check
 		setTimeout(
-			this.checkForUpdates.bind(this),
+			this.#runCheck,
 			500
 		)
 
