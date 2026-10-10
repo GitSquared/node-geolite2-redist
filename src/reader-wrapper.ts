@@ -29,10 +29,24 @@ export function wrapReader<DbReaderInstance extends Record<string, unknown>>(
 		}
 	})
 
-	return new Promise(resolve => {
+	return new Promise((resolve, reject) => {
+		const rejectInitialCheck = (error: unknown): void => {
+			autoUpdater.close()
+			reject(error)
+		}
+		autoUpdater.once('check-error', rejectInitialCheck)
+
 		autoUpdater.once('check-ok', async (paths: Record<GeoIpDbName, Path>) => {
-			const dbPath = paths[dbName]
-			reader = await readerInitializer(dbPath)
+			autoUpdater.removeListener('check-error', rejectInitialCheck)
+
+			try {
+				const dbPath = paths[dbName]
+				reader = await readerInitializer(dbPath)
+			} catch (error) {
+				autoUpdater.close()
+				reject(error)
+				return
+			}
 
 			setImmediate(() => {
 				autoUpdater.on('updated', async (paths: Record<GeoIpDbName, Path>) => {

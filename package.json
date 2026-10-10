@@ -31,7 +31,8 @@
   "scripts": {
     "prepare": "husky",
     "build": "tsc",
-    "make-docs": "typedoc"
+    "make-docs": "typedoc",
+    "test": "npm run build && node --test test"
   },
   "repository": {
     "type": "git",
