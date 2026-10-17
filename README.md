@@ -102,7 +102,7 @@ If you plan on using `node-geolite2` behind a firewall, you need to whitelist th
 
 ## Compatibility
 
-We follow the OpenJS Foundation's [deprecation schedule](https://nodejs.org/en/about/releases/) and support all maintained Node versions.
+Node.js 22 or newer is required. We follow the OpenJS Foundation's [release schedule](https://nodejs.org/en/about/releases/) and support maintained Node versions.
 
 ## Alternatives
 
