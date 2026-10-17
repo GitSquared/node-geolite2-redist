@@ -1,7 +1,7 @@
 {
   "name": "geolite2-redist",
   "type": "module",
-  "version": "3.1.4",
+  "version": "4.0.0",
   "description": "Redistribution of Maxmind's GeoLite2 Free Databases (without License Key)",
   "source": "src/index.ts",
   "exports": {
@@ -17,7 +17,7 @@
     "README.md"
   ],
   "engines": {
-    "node": ">= 18.0.0"
+    "node": ">= 22.0.0"
   },
   "keywords": [
     "maxmind",
@@ -32,7 +32,7 @@
     "prepare": "husky",
     "build": "tsc",
     "make-docs": "typedoc",
-    "test": "npm run build && node --test test"
+    "test": "npm run build && node --test test/*.test.mjs"
   },
   "repository": {
     "type": "git",
@@ -58,7 +58,7 @@
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
-    "@types/node": "^20.14.9",
+    "@types/node": "^22.20.0",
     "@types/rimraf": "^3.0.2",
     "@types/tar": "^6.1.13",
     "husky": "^9.0.11",
